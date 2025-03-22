@@ -1,34 +1,78 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import type React from "react"
+import { useState } from "react"
+import "./App.css"
+import students from "./assets/students.png"
 
-function App() {
-  const [count, setCount] = useState(0)
+const App: React.FC = () => {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log(`Correo: ${email} - Contraseña: ${password}`)
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="container">
+      <div className="left-section">
+        <div className="text-container">
+          <h1>SCIENCE STEM</h1>
+          <h2>Un impulso más para seguir adelante</h2>
+        </div>
+        <div className="illustration-container">
+          <img src={students} alt="Estudiantes colaborando" className="illustration" />
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+
+      <div className="right-section">
+        <div className="form-container">
+          <form onSubmit={handleSubmit} className="form">
+            <div className="form-group">
+              <label htmlFor="email" className="label">
+                Correo Institucional
+              </label>
+              <input
+                id="email"
+                type="email"
+                placeholder="Correo Institucional"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="input"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="password" className="label">
+                Contraseña
+              </label>
+              <input
+                id="password"
+                type="password"
+                placeholder="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="input"
+              />
+            </div>
+
+            <button type="submit" className="button">
+              Ingresar
+            </button>
+
+            <div className="links">
+              <a href="/forgot-password" className="link">
+                ¿Olvidaste tu contraseña? Haz click aquí
+              </a>
+              <a href="/register" className="link">
+                Regístrate
+              </a>
+            </div>
+          </form>
+        </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 
