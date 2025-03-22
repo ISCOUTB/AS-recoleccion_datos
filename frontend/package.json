@@ -1,5 +1,5 @@
 {
-  "name": "test-proyect",
+  "name": "recoleccion_datos",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,6 +12,7 @@
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "recoleccion_datos": "file:",
     "test-proyect": "file:"
   },
   "devDependencies": {
