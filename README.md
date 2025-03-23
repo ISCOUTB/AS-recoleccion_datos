@@ -3,7 +3,7 @@
 ## 📋 Tabla de Contenidos
 
 - [🚀 Acerca del Proyecto](#-acerca-del-proyecto)
-- [🏗️ Arquitectura](#-arquitectura)
+- [🏗️ Arquitectura](#%EF%B8%8F-arquitectura)
 - [💻 Stack Tecnológico](#-stack-tecnológico)
 - [✨ Características Principales](#-características-principales)
 - [📊 Diagramas](#-diagramas)
