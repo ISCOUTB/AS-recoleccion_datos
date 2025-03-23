@@ -5,15 +5,9 @@
 - [🚀 Acerca del Proyecto](#-acerca-del-proyecto)
 - [🏗️ Arquitectura](#-arquitectura)
 - [💻 Stack Tecnológico](#-stack-tecnológico)
-- [🔧 Instalación y Configuración](#-instalación-y-configuración)
 - [✨ Características Principales](#-características-principales)
 - [📊 Diagramas](#-diagramas)
-- [📁 Estructura del Proyecto](#-estructura-del-proyecto)
 - [🔒 Seguridad y Privacidad](#-seguridad-y-privacidad)
-- [🤝 Contribución](#-contribución)
-- [📄 Licencia](#-licencia)
-- [📞 Contacto](#-contacto)
-
 
 ## 🚀 Acerca del Proyecto
 
