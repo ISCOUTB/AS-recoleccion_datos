@@ -5,6 +5,7 @@ import "./App.css"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import students from "./assets/students.png"
 import Register from "./components/register"
+import Form from "./components/Form"
 import axios from "axios" 
 import config from "./config" 
 const Login: React.FC = () => {
@@ -106,6 +107,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/form" element={<Form/>} />
       </Routes>
     </Router>
   );
