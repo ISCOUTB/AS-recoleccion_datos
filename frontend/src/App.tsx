@@ -25,7 +25,7 @@ const Login: React.FC = () => {
       });
 
       localStorage.setItem("token", response.data.access_token);
-      window.location.href = "/dashboard";
+      window.location.href = "/form";
     } catch (err: any) {
       console.error("Error de login:", err);
       setError(err.response?.data?.detail || "Error al iniciar sesión. Intente nuevamente.");

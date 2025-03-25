@@ -1,0 +1,190 @@
+/* Estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+      "Helvetica Neue", sans-serif;
+  }
+  
+  
+  /* Contenedor principal con fondo degradado */
+  .quiz-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(to right, #7CEA9C, #30C5AA, #2E5EAA);
+    padding: 20px;
+  }
+  
+  /* Tarjeta del cuestionario */
+  .quiz-card {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    padding: 30px;
+  }
+  
+  /* Título del cuestionario */
+  .quiz-title {
+    text-align: center;
+    color: #1e40af;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+  
+  /* Barra de progreso */
+  .progress-bar {
+    height: 8px;
+    background-color: #e5e7eb;
+    border-radius: 4px;
+    margin-bottom: 30px;
+    overflow: hidden;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background-color: #4ade80;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+  
+  /* Contenedor de la pregunta */
+  .question-container {
+    margin-bottom: 20px;
+  }
+  
+  .question-text {
+    font-size: 1.2rem;
+    color: #374151;
+    margin-bottom: 20px;
+  }
+  
+  /* Contenedor de opciones */
+  .options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 30px;
+  }
+  
+  /* Botones de opciones */
+  .option-button {
+    padding: 15px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: white;
+    text-align: left;
+    font-size: 1rem;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .option-button:hover {
+    border-color: #3b82f6;
+  }
+  
+  .option-button.selected {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+  }
+  
+  /* Botones de navegación */
+  .navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .nav-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+  }
+  
+  .prev-button {
+    background-color: #e5e7eb;
+    color: #4b5563;
+  }
+  
+  .prev-button:hover:not(:disabled) {
+    background-color: #d1d5db;
+  }
+  
+  .next-button {
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  .next-button:hover:not(:disabled) {
+    background-color: #2563eb;
+  }
+  
+  .nav-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* Estilos para la pantalla de resultados */
+  .results-card {
+    text-align: center;
+  }
+  
+  .results-title {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+  }
+  
+  .results-message {
+    color: #4b5563;
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+  }
+  
+  .results-summary {
+    text-align: left;
+    margin-bottom: 30px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 10px;
+  }
+  
+  .result-item {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .result-question {
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 5px;
+  }
+  
+  .result-answer {
+    color: #4b5563;
+  }
+  
+  .results-button {
+    margin: 0 auto;
+    display: block;
+    width: auto;
+    min-width: 200px;
+  }
+  
+  /* Estilos responsivos */
+  @media (max-width: 600px) {
+    .quiz-card {
+      padding: 20px;
+    }
+  
+    .option-button {
+      padding: 12px;
+    }
+  }
