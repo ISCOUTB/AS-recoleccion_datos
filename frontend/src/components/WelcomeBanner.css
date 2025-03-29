@@ -1,0 +1,50 @@
+.welcome-banner {
+  background-color: var(--accent-color);
+  border-radius: var(--border-radius);
+  padding: 25px 30px;
+  color: white;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.welcome-content h1 {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.welcome-content p {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.average-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+}
+
+.average-label {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.average-value {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .welcome-banner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .average-container {
+    margin-top: 15px;
+  }
+}

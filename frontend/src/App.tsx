@@ -5,7 +5,7 @@ import "./App.css"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import students from "./assets/students.png"
 import Register from "./components/register"
-import Form from "./components/Form"
+import Form from "./pages/Form"
 import axios from "axios" 
 import config from "./config" 
 const Login: React.FC = () => {
