@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
@@ -38,3 +38,30 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def init_db():
+    """Inicializa la base de datos creando todas las tablas definidas."""
+    # Importar todos los modelos aquí para asegurarse de que estén registrados con Base
+    from app.models.models import (
+        User, AcademicRecord, Course, Enrollment, Survey, 
+        Question, Option, SurveyResponse, AnswerDetail, Notification
+    )
+    
+    # Verificar qué tablas ya existen
+    inspector = inspect(engine)
+    existing_tables = inspector.get_table_names()
+    
+    print(f"Tablas existentes: {existing_tables}")
+    print("Creando tablas que no existen...")
+    
+    # Crear todas las tablas
+    Base.metadata.create_all(bind=engine)
+    
+    # Verificar nuevamente las tablas
+    inspector = inspect(engine)
+    updated_tables = inspector.get_table_names()
+    
+    print(f"Tablas después de la creación: {updated_tables}")
+    print(f"Tablas creadas: {set(updated_tables) - set(existing_tables)}")
+    
+    return True

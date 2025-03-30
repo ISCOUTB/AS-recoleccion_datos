@@ -1,9 +1,12 @@
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from app.database import engine
 from app.models.models import Base
 from app.routes.users import router as users_router
+from app.routes.dashboard import router as dashboard_router
+from app.routes.surveys import router as surveys_router
 from app.config import settings
 
 # Crear tablas en la base de datos
@@ -12,8 +15,8 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.PROJECT_VERSION,
-    docs_url="/docs" if settings.ENVIRONMENT != "production" else None,  # Deshabilitar docs en producción
-    redoc_url="/redoc" if settings.ENVIRONMENT != "production" else None  # Deshabilitar redoc en producción
+    docs_url="/docs" if settings.ENVIRONMENT != "production" else None,
+    redoc_url="/redoc" if settings.ENVIRONMENT != "production" else None
 )
 
 # Configurar CORS
@@ -27,6 +30,8 @@ app.add_middleware(
 
 # Incluir rutas
 app.include_router(users_router, prefix="/api/users", tags=["users"])
+app.include_router(dashboard_router, prefix="/api/dashboard", tags=["dashboard"])
+app.include_router(surveys_router, prefix="/api/surveys", tags=["surveys"])
 
 @app.get("/")
 def read_root():
@@ -36,6 +41,14 @@ def read_root():
         "documentation": f"{settings.API_BASE_URL}/docs"
     }
 
+# Manejador de excepciones para rutas no encontradas
+@app.exception_handler(404)
+async def custom_404_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=404,
+        content={"detail": "La ruta solicitada no existe"}
+    )
+
 # Esto permite ejecutar el archivo directamente con python main.py
 if __name__ == "__main__":
     uvicorn.run(
@@ -44,3 +57,4 @@ if __name__ == "__main__":
         port=settings.PORT,
         reload=settings.ENVIRONMENT == "development"
     )
+
