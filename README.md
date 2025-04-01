@@ -43,7 +43,6 @@ El sistema utiliza tecnologías modernas y robustas:
 
 - **React**: Biblioteca para construir interfaces de usuario interactivas
 - **Vite.js**: Herramienta de construcción que proporciona un entorno de desarrollo más rápido
-- **TailwindCSS**: Framework CSS para diseño responsivo y personalizado
 
 
 ### Backend
