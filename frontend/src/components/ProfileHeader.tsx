@@ -1,6 +1,10 @@
+"use client"
+
 import { useState, useRef, useEffect } from "react"
 import { Bell, Settings, CheckCircle, AlertCircle, Info, LogOut, User, Moon, Sun, HelpCircle } from "lucide-react"
 import "./ProfileHeader.css"
+import { useTheme } from "../context/ThemeContext"
+import { useNavigate } from "react-router-dom"
 
 interface Notification {
   id: number
@@ -18,9 +22,10 @@ interface ProfileHeaderProps {
 }
 
 const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
+  const navigate = useNavigate()
   const [showNotifications, setShowNotifications] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
-  const [darkMode, setDarkMode] = useState(false)
+  const { darkMode, toggleDarkMode } = useTheme()
   const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: 1,
@@ -28,7 +33,7 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
       message: "Calificación registrada: Matemáticas Avanzadas",
       time: "Hace 2 horas",
       icon: CheckCircle,
-      read: false
+      read: false,
     },
     {
       id: 2,
@@ -36,7 +41,7 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
       message: "Recordatorio: Entrega de proyecto final",
       time: "Hace 1 día",
       icon: AlertCircle,
-      read: false
+      read: false,
     },
     {
       id: 3,
@@ -44,7 +49,7 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
       message: "Nueva encuesta disponible",
       time: "Hace 2 días",
       icon: Info,
-      read: false
+      read: false,
     },
   ])
 
@@ -52,7 +57,7 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
   const settingsRef = useRef<HTMLDivElement>(null)
 
   // Obtener el conteo de notificaciones no leídas
-  const unreadCount = notifications.filter(notification => !notification.read).length
+  const unreadCount = notifications.filter((notification) => !notification.read).length
 
   // Cerrar menús al hacer clic fuera de ellos
   useEffect(() => {
@@ -81,29 +86,32 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
     setShowNotifications(false)
   }
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode)
-    // Aquí se podría implementar la lógica para cambiar el tema
-  }
-
   // Función para marcar todas las notificaciones como leídas
   const markAllAsRead = () => {
-    setNotifications(notifications.map(notification => ({
-      ...notification,
-      read: true
-    })))
+    setNotifications(
+      notifications.map((notification) => ({
+        ...notification,
+        read: true,
+      })),
+    )
   }
 
   // Función para marcar una notificación específica como leída
   const markAsRead = (id: number) => {
-    setNotifications(notifications.map(notification => 
-      notification.id === id ? { ...notification, read: true } : notification
-    ))
+    setNotifications(
+      notifications.map((notification) => (notification.id === id ? { ...notification, read: true } : notification)),
+    )
   }
 
   // Función para eliminar todas las notificaciones
   const clearAllNotifications = () => {
     setNotifications([])
+  }
+
+  // Navegar a la página de perfil
+  const goToProfile = () => {
+    navigate("/profile")
+    setShowSettings(false)
   }
 
   return (
@@ -123,16 +131,14 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
             aria-label="Notificaciones"
           >
             <Bell size={20} />
-            {unreadCount > 0 && (
-              <span className="notification-badge">{unreadCount}</span>
-            )}
+            {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
           </button>
 
           {showNotifications && (
             <div className="dropdown-menu notifications-menu">
               <div className="dropdown-header">
                 <h3>Notificaciones</h3>
-                <button 
+                <button
                   className="text-button"
                   onClick={markAllAsRead}
                   disabled={unreadCount === 0}
@@ -144,9 +150,9 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
               <div className="dropdown-content">
                 {notifications.length > 0 ? (
                   notifications.map((notification) => (
-                    <div 
-                      key={notification.id} 
-                      className={`notification-item ${notification.type} ${notification.read ? 'read' : ''}`}
+                    <div
+                      key={notification.id}
+                      className={`notification-item ${notification.type} ${notification.read ? "read" : ""}`}
                       onClick={() => markAsRead(notification.id)}
                     >
                       <div className={`notification-icon ${notification.type}`}>
@@ -168,10 +174,7 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
                 {notifications.length > 0 ? (
                   <div className="footer-actions">
                     <button className="text-button">Ver todas</button>
-                    <button 
-                      className="text-button text-danger" 
-                      onClick={clearAllNotifications}
-                    >
+                    <button className="text-button text-danger" onClick={clearAllNotifications}>
                       Borrar todas
                     </button>
                   </div>
@@ -198,7 +201,7 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
                 <h3>Configuración</h3>
               </div>
               <div className="dropdown-content">
-                <button className="menu-item">
+                <button className="menu-item" onClick={goToProfile}>
                   <User size={18} />
                   <span>Perfil</span>
                 </button>

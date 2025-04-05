@@ -6,12 +6,13 @@ import { useState, useEffect } from "react"
 import "./App.css"
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
 import students from "./assets/students.png"
-import Register from "./components/register"
-import Dashboard from "./components/Dashboard"
+import Register from "./components/Register"
+import Dashboard from "./pages/Dashboard"
 import Form from "./pages/Form"
 import NotFound from "./pages/NotFound"
 import axios from "axios"
 import config from "./config"
+import ProfilePage from "./pages/ProfilePage"
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("")
@@ -158,6 +159,7 @@ const App: React.FC = () => {
           }
         />
         <Route path="*" element={<NotFound />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </Router>
   )
