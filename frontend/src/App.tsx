@@ -1,8 +1,10 @@
+"use client"
+
 import type React from "react"
 
 import { useState, useEffect } from "react"
 import "./App.css"
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom"
 import students from "./assets/students.png"
 import Register from "./components/register"
 import Dashboard from "./pages/Dashboard"
@@ -12,13 +14,34 @@ import axios from "axios"
 import config from "./config"
 import ProfilePage from "./pages/ProfilePage"
 import HelpPage from "./pages/HelpPage"
-import { ThemeProvider } from "./context/ThemeContext";
+import { ThemeProvider } from "./context/ThemeContext"
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+
+  // Verificar si ya hay una sesión activa
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (token) {
+      // Verificar si el token es válido
+      const verifyToken = async () => {
+        try {
+          await axios.get(`${config.apiUrl}/users/me`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          // Si la petición es exitosa, el token es válido, redirigir al dashboard
+          window.location.href = "/dashboard"
+        } catch (err) {
+          // Si hay un error, el token no es válido, eliminarlo
+          localStorage.removeItem("token")
+        }
+      }
+      verifyToken()
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -116,59 +139,158 @@ const Login: React.FC = () => {
         </div>
       </div>
     </div>
-    
   )
-  
 }
 
-// Componente para proteger rutas
+// Componente mejorado para proteger rutas
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate()
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    setIsAuthenticated(!!token)
+    const verifyAuth = async () => {
+      const token = localStorage.getItem("token")
+
+      if (!token) {
+        setIsAuthenticated(false)
+        setIsLoading(false)
+        return
+      }
+
+      try {
+        // Verificar si el token es válido haciendo una petición al endpoint /users/me
+        await axios.get(`${config.apiUrl}/users/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+
+        // Si la petición es exitosa, el token es válido
+        setIsAuthenticated(true)
+      } catch (error) {
+        // Si hay un error, el token no es válido o ha expirado
+        console.error("Error de autenticación:", error)
+        localStorage.removeItem("token")
+        setIsAuthenticated(false)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    verifyAuth()
+
+    // Agregar un listener para el evento popstate (cuando se usa el botón de retroceso)
+    const handlePopState = () => {
+      verifyAuth()
+    }
+
+    window.addEventListener("popstate", handlePopState)
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState)
+    }
+  }, [navigate])
+
+  // Listener para detectar cambios en el localStorage (por ejemplo, cuando se cierra sesión en otra pestaña)
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "token") {
+        setIsAuthenticated(!!e.newValue)
+      }
+    }
+
+    window.addEventListener("storage", handleStorageChange)
+    return () => {
+      window.removeEventListener("storage", handleStorageChange)
+    }
   }, [])
 
-  if (isAuthenticated === null) {
-    // Aún verificando autenticación
-    return <div>Cargando...</div>
+  if (isLoading) {
+    return <div className="loading-container">Verificando autenticación...</div>
   }
 
   return isAuthenticated ? <>{children}</> : <Navigate to="/" />
 }
 
+// Componente para detectar cambios en el token y forzar actualización
+const AuthListener = () => {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    // Función para manejar el evento de almacenamiento personalizado
+    const handleLogout = () => {
+      navigate("/", { replace: true })
+    }
+
+    // Agregar un listener para el evento personalizado
+    window.addEventListener("app:logout", handleLogout)
+
+    return () => {
+      window.removeEventListener("app:logout", handleLogout)
+    }
+  }, [navigate])
+
+  return null
+}
+
 const App: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    // Verificar si hay un token en localStorage
+    const token = localStorage.getItem("token")
+    setIsAuthenticated(!!token)
+
+    // Agregar un listener para detectar cambios en el localStorage
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "token") {
+        setIsAuthenticated(!!e.newValue)
+      }
+    }
+
+    window.addEventListener("storage", handleStorageChange)
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange)
+    }
+  }, [])
+
   return (
     <ThemeProvider>
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route
-          path="/form"
-          element={
-            <ProtectedRoute>
-              <Form />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/*"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="*" element={<NotFound />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/help" element={<HelpPage />} />
-      </Routes>
-    </Router>
+      <Router>
+        <AuthListener />
+        <Routes>
+          <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
+          <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Register />} />
+          <Route
+            path="/form"
+            element={
+              <ProtectedRoute>
+                <Form />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/*"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/help" element={<HelpPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
     </ThemeProvider>
   )
 }
 
 export default App
-

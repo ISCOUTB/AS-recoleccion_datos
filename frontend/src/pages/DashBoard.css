@@ -21,6 +21,34 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --card-bg: #ffffff;
+}
+
+/* Variables para modo oscuro */
+[data-theme="dark"],
+.dark-mode {
+  --primary-color: #4d7cc9;
+  --primary-dark: #3a69b6;
+  --primary-light: #6089d3;
+  --accent-color: #3dd5b0;
+  --accent-dark: #2bc59f;
+  --accent-light: #4de5c0;
+  --text-color: #e0e0e0;
+  --text-light: #b0b0b0;
+  --background-color: #121212;
+  --border-color: #333333;
+  --success-color: #66bb6a;
+  --warning-color: #ffa726;
+  --danger-color: #ef5350;
+  --gray-100: #1e1e1e;
+  --gray-200: #2d2d2d;
+  --gray-300: #404040;
+  --gray-400: #555555;
+  --gray-500: #777777;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+  --card-bg: #1e1e1e;
 }
 
 /* Estilos generales */
@@ -34,6 +62,7 @@
 body {
   background-color: var(--background-color);
   color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .app-container {
@@ -46,6 +75,8 @@ body {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
+  background-color: var(--background-color);
+  transition: background-color 0.3s ease;
 }
 
 .content-wrapper {

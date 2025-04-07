@@ -4,6 +4,10 @@
   align-items: center;
   margin-bottom: 20px;
   padding: 10px;
+  background-color: var(--card-bg, white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .profile-info {
@@ -22,6 +26,7 @@
 .user-details h2 {
   font-size: 18px;
   margin-bottom: 4px;
+  color: var(--text-color);
 }
 
 .user-details p {
@@ -39,8 +44,11 @@
   border: none;
   cursor: pointer;
   color: var(--text-color);
-  width: 40px;
-  height: 40px;
+  font-size: 15px;
+  width: 50px;
+  padding: 8px;
+  aspect-ratio: 1;
+  height: 50px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -51,6 +59,7 @@
 .icon-button:hover {
   background-color: var(--gray-200);
 }
+
 
 /* Estilos para los menús desplegables */
 .notification-container,
@@ -82,13 +91,14 @@
   position: absolute;
   top: 45px;
   right: 0;
-  background-color: white;
+  background-color: var(--card-bg, white);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-lg);
   width: 320px;
   z-index: 100;
   overflow: hidden;
   border: 1px solid var(--border-color);
+  transition: background-color 0.3s ease;
 }
 
 .dropdown-header {
@@ -102,6 +112,7 @@
 .dropdown-header h3 {
   font-size: 16px;
   margin: 0;
+  color: var(--text-color);
 }
 
 .dropdown-content {
@@ -133,7 +144,7 @@
   padding: 15px;
   display: flex;
   align-items: flex-start;
-  border-bottom: 1px solid var(--gray-200);
+  border-bottom: 1px solid var(--border-color);
   transition: background-color 0.2s;
 }
 
@@ -178,6 +189,7 @@
 .notification-content p {
   margin: 0 0 5px 0;
   font-size: 14px;
+  color: var(--text-color);
 }
 
 .notification-time {
@@ -196,6 +208,7 @@
   text-align: left;
   cursor: pointer;
   transition: background-color 0.2s;
+  color: var(--text-color);
 }
 
 .menu-item:hover {
@@ -204,7 +217,7 @@
 
 .menu-item svg {
   margin-right: 12px;
-  color: var(--text-light);
+  color: var(--text-color);
 }
 
 .menu-divider {

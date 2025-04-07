@@ -37,7 +37,7 @@ body {
 /* Sección izquierda */
 .left-section {
   display: none; /* Oculto en móviles */
-  background-color: #30C5AA; /* Color verde turquesa */
+  background-color: #30c5aa; /* Color verde turquesa */
   flex-direction: column;
   justify-content: space-between;
   padding: 3rem;
@@ -54,40 +54,39 @@ body {
 
 .mobile-logo h1 {
   font-size: 2.5rem;
-  color: #30C5AA;
-  margin-bottom: 0.5rem; 
+  color: #30c5aa;
+  margin-bottom: 0.5rem;
 }
 
 .mobile-logo h2 {
-  font-size: 1.25rem; 
+  font-size: 1.25rem;
   color: #4b5563;
   font-weight: normal;
-  line-height: 1.4; 
+  line-height: 1.4;
 }
 
 .text-container {
   text-align: center;
   width: 100%;
-  margin-top: 60px; 
-  margin-bottom: 20px; 
+  margin-top: 60px;
+  margin-bottom: 20px;
   color: white;
   position: relative;
   z-index: 2;
 }
 
 .text-container h1 {
-  font-size: 3.5rem; 
+  font-size: 3.5rem;
   font-weight: 700;
-  margin-bottom: 1.5rem; 
+  margin-bottom: 1.5rem;
   letter-spacing: 1px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-
 .text-container h2 {
-  font-size: 1.75rem; 
+  font-size: 1.75rem;
   font-weight: 500;
-  opacity: 0.95; 
+  opacity: 0.95;
   line-height: 1.4;
 }
 
@@ -95,18 +94,17 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 65%; 
+  height: 65%;
   position: relative;
   z-index: 2;
   margin-top: 20px;
 }
 
-
 .illustration {
-  max-width: 90%; 
-  max-height: 90%; 
+  max-width: 90%;
+  max-height: 90%;
   object-fit: contain;
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1)); 
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
 }
 
 /* Sección derecha */
@@ -148,7 +146,6 @@ body {
   margin-bottom: 1.5rem;
   text-align: center;
 }
-
 .register-container .form-title {
   margin-top: 0.5rem;
 }
@@ -192,6 +189,7 @@ body {
   font-weight: 500;
 }
 
+
 .input {
   width: 100%;
   padding: 0.75rem;
@@ -199,8 +197,8 @@ body {
   border-radius: 0.375rem;
   font-size: 1rem;
   transition: border-color 0.2s, box-shadow 0.2s;
+  color: #000000 !important; 
 }
-
 /* Ajustes específicos para login */
 .login-form .input {
   padding: 0.625rem 0.75rem;
@@ -234,7 +232,7 @@ body {
 .button {
   width: 100%;
   padding: 0.75rem 1rem;
-  background-color: #2E5EAA;
+  background-color: #2e5eaa;
   color: white;
   border: none;
   border-radius: 0.375rem;
@@ -274,7 +272,7 @@ body {
 }
 
 .link {
-  color: #2E5EAA;
+  color: #2e5eaa;
   text-decoration: none;
   transition: color 0.2s;
 }
@@ -306,28 +304,28 @@ body {
   .register-container .mobile-logo {
     margin-bottom: 0.5rem;
   }
-  
+
   .register-container .mobile-logo h1 {
     font-size: 1.5rem;
   }
-  
+
   .register-container .mobile-logo h2 {
     font-size: 0.875rem;
   }
-  
+
   .register-container .form-title {
     font-size: 1.5rem;
     margin-bottom: 1rem;
   }
-  
+
   .register-container .form {
     gap: 1rem;
   }
-  
+
   .register-container .form-group {
     margin-bottom: 0.25rem;
   }
-  
+
   .register-container .input {
     padding: 0.5rem 0.75rem;
   }
@@ -339,20 +337,20 @@ body {
     flex-direction: row;
     gap: 1rem;
   }
-  
+
   .half {
     width: 50%;
   }
-  
+
   .links {
     flex-direction: row;
     justify-content: space-between;
   }
-  
+
   .mobile-logo h1 {
     font-size: 2rem;
   }
-  
+
   .mobile-logo h2 {
     font-size: 1.25rem;
   }
@@ -362,7 +360,7 @@ body {
   .right-section {
     padding: 3rem;
   }
-  
+
   .login-container .right-section {
     padding: 2rem;
   }
@@ -374,14 +372,14 @@ body {
   .mobile-logo {
     display: none;
   }
-  
+
   /* Ajustes específicos para registro en PC */
   .register-container {
     flex-direction: row;
     overflow: hidden;
     height: 100vh; /* Forzar altura completa de la ventana */
   }
-  
+
   /* Sección izquierda para PC */
   .left-section {
     display: flex;
@@ -389,32 +387,32 @@ body {
     overflow: hidden;
     padding: 2rem; /* Reducir padding */
   }
-  
+
   .register-container .left-section {
     justify-content: center; /* Centrar contenido verticalmente */
   }
-  
+
   .register-container .left-section .text-container {
     margin-top: 0; /* Eliminar margen superior */
   }
-  
+
   .register-container .left-section .text-container h1,
   .login-container .left-section .text-container h1 {
-    font-size: 3.25rem; 
+    font-size: 3.25rem;
   }
-  
+
   .register-container .left-section .text-container h2,
   .login-container .left-section .text-container h2 {
-    font-size: 1.6rem; 
+    font-size: 1.6rem;
   }
-  
+
   .register-container .left-section .illustration-container,
   .login-container .left-section .illustration-container {
-    height: 60%; 
+    height: 60%;
   }
   .register-container .left-section .illustration,
   .login-container .left-section .illustration {
-    max-width: 85%; 
+    max-width: 85%;
     max-height: 85%;
   }
 
@@ -422,7 +420,7 @@ body {
   .right-section {
     width: 50%;
   }
-  
+
   .register-container .right-section {
     overflow-y: hidden; /* Eliminar scroll */
     padding: 1.5rem; /* Reducir padding */
@@ -430,7 +428,7 @@ body {
     align-items: center;
     justify-content: center;
   }
-  
+
   /* Ajustes del formulario para PC */
   .register-container .form-container {
     padding: 0; /* Eliminar padding */
@@ -439,43 +437,43 @@ body {
     flex-direction: column;
     justify-content: center;
   }
-  
+
   .register-container .form-title {
     font-size: 1.5rem; /* Reducir tamaño de fuente */
     margin-bottom: 1rem; /* Reducir margen inferior */
   }
-  
+
   .register-container .form {
     gap: 0.75rem; /* Reducir espacio entre elementos */
   }
-  
+
   .register-container .form-group {
     gap: 0.25rem; /* Reducir espacio entre label e input */
   }
-  
+
   .register-container .label {
     font-size: 0.8rem; /* Reducir tamaño de fuente */
   }
-  
+
   .register-container .input {
     padding: 0.5rem 0.75rem; /* Reducir padding */
     font-size: 0.9rem; /* Reducir tamaño de fuente */
   }
-  
+
   .register-container .form-row {
     gap: 0.75rem; /* Reducir espacio entre elementos */
   }
-  
+
   .register-container .button {
     padding: 0.5rem 1rem; /* Reducir padding */
     margin-top: 0.5rem; /* Añadir margen superior */
   }
-  
+
   .register-container .links {
     margin-top: 0.5rem; /* Reducir margen superior */
     font-size: 0.8rem; /* Reducir tamaño de fuente */
   }
-  
+
   .register-container .error-text {
     font-size: 0.7rem; /* Reducir tamaño de fuente */
     margin-top: 0.125rem; /* Reducir margen superior */
@@ -487,17 +485,17 @@ body {
   .login-container .left-section .text-container h1 {
     font-size: 3.5rem;
   }
-  
+
   .register-container .left-section .text-container h2,
   .login-container .left-section .text-container h2 {
     font-size: 1.75rem;
   }
-  
+
   .register-container .left-section .illustration-container,
   .login-container .left-section .illustration-container {
     height: 65%;
   }
-  
+
   .register-container .left-section .illustration,
   .login-container .left-section .illustration {
     max-width: 90%;
@@ -506,6 +504,12 @@ body {
 }
 /* Animación para mensajes de éxito */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

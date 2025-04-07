@@ -14,6 +14,7 @@ import AcademicPage from "../pages/AcademicPage"
 import SchedulePage from "../pages/SchedulePage"
 import CoursesPage from "../pages/CoursesPage"
 import NotFound from "../pages/NotFound"
+import { ThemeProvider } from "../context/ThemeContext"
 
 interface UserData {
   id: number
@@ -80,45 +81,46 @@ function Dashboard() {
   }
 
   return (
-    <div className="app-container">
-      <Sidebar />
-      <main className="main-content">
-        <ProfileHeader
-          name={userData?.full_name || "Usuario"}
-          role="Estudiante"
-          avatarUrl="/placeholder.svg?height=50&width=50"
-        />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <div className="content-wrapper">
-                <WelcomeBanner
-                  name={userData?.full_name?.split(" ")[0] || "Usuario"}
-                  message="Tu progreso académico está en buen camino"
-                  average={academicData?.average_score || 0}
-                />
-                <AcademicInfo
-                  career={userData?.program || "No especificado"}
-                  semester={`${userData?.semester || 0}° Semestre`}
-                  credits={academicData?.credits_completed || 0}
-                  totalCredits={academicData?.total_credits || 0}
-                  period={academicData?.period || "No especificado"}
-                  status={academicData?.status || "No especificado"}
-                />
-                <AcademicSurvey />
-              </div>
-            }
+    <ThemeProvider>
+      <div className="app-container">
+        <Sidebar />
+        <main className="main-content">
+          <ProfileHeader
+            name={userData?.full_name || "Usuario"}
+            role="Estudiante"
+            avatarUrl="/placeholder.svg?height=50&width=50"
           />
-          <Route path="/academico" element={<AcademicPage />} />
-          <Route path="/horario" element={<SchedulePage />} />
-          <Route path="/cursos" element={<CoursesPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </main>
-    </div>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <div className="content-wrapper">
+                  <WelcomeBanner
+                    name={userData?.full_name?.split(" ")[0] || "Usuario"}
+                    message="Tu progreso académico está en buen camino"
+                    average={academicData?.average_score || 0}
+                  />
+                  <AcademicInfo
+                    career={userData?.program || "No especificado"}
+                    semester={`${userData?.semester || 0}° Semestre`}
+                    credits={academicData?.credits_completed || 0}
+                    totalCredits={academicData?.total_credits || 0}
+                    period={academicData?.period || "No especificado"}
+                    status={academicData?.status || "No especificado"}
+                  />
+                  <AcademicSurvey />
+                </div>
+              }
+            />
+            <Route path="/academico" element={<AcademicPage />} />
+            <Route path="/horario" element={<SchedulePage />} />
+            <Route path="/cursos" element={<CoursesPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+      </div>
+    </ThemeProvider>
   )
 }
 
 export default Dashboard
-

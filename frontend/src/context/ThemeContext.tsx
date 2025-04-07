@@ -12,19 +12,27 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   // Verificar si hay una preferencia guardada en localStorage
   const [darkMode, setDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem("darkMode")
-    return savedTheme ? JSON.parse(savedTheme) : false
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("darkMode")
+      return savedTheme ? JSON.parse(savedTheme) : false
+    }
+    return false
   })
 
-  // Aplicar la clase al elemento html cuando cambia el modo
+  // Aplicar el tema cuando cambia el modo
   useEffect(() => {
     if (darkMode) {
+      document.documentElement.setAttribute("data-theme", "dark")
       document.documentElement.classList.add("dark-mode")
     } else {
+      document.documentElement.setAttribute("data-theme", "light")
       document.documentElement.classList.remove("dark-mode")
     }
+
     // Guardar preferencia en localStorage
-    localStorage.setItem("darkMode", JSON.stringify(darkMode))
+    if (typeof window !== "undefined") {
+      localStorage.setItem("darkMode", JSON.stringify(darkMode))
+    }
   }, [darkMode])
 
   const toggleDarkMode = () => {
@@ -42,4 +50,3 @@ export const useTheme = () => {
   }
   return context
 }
-

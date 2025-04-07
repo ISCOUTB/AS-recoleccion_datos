@@ -1,3 +1,7 @@
+"use client"
+
+import React from "react"
+
 import { useState, useRef, useEffect } from "react"
 import { Bell, Settings, CheckCircle, AlertCircle, Info, LogOut, User, Moon, Sun, HelpCircle } from "lucide-react"
 import "./ProfileHeader.css"
@@ -118,6 +122,18 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
     setShowSettings(false)
   }
 
+  // Función para cerrar sesión
+  const handleLogout = () => {
+    // Eliminar el token del localStorage
+    localStorage.removeItem("token")
+
+    // Cerrar el menú de configuración
+    setShowSettings(false)
+
+    // Usar window.location.href para forzar una recarga completa
+    window.location.href = "/"
+  }
+
   return (
     <header className="profile-header">
       <div className="profile-info">
@@ -134,7 +150,7 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
             onClick={toggleNotifications}
             aria-label="Notificaciones"
           >
-            <Bell size={20} />
+            <Bell size={"1.5em"} color="currentColor" />
             {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
           </button>
 
@@ -160,7 +176,7 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
                       onClick={() => markAsRead(notification.id)}
                     >
                       <div className={`notification-icon ${notification.type}`}>
-                        <notification.icon size={18} />
+                        {React.createElement(notification.icon, { size: 18 })}
                       </div>
                       <div className="notification-content">
                         <p>{notification.message}</p>
@@ -196,7 +212,7 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
             onClick={toggleSettings}
             aria-label="Configuración"
           >
-            <Settings size={20} />
+            <Settings size={"1.5em"} color="currentColor" />
           </button>
 
           {showSettings && (
@@ -218,7 +234,7 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
                   <span>Ayuda</span>
                 </button>
                 <div className="menu-divider"></div>
-                <button className="menu-item logout">
+                <button className="menu-item logout" onClick={handleLogout}>
                   <LogOut size={18} />
                   <span>Cerrar sesión</span>
                 </button>
