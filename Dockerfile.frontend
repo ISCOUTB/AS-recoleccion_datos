@@ -1,0 +1,18 @@
+FROM node:20-slim
+
+WORKDIR /app
+
+# Copia solo los archivos necesarios para instalar dependencias
+COPY frontend/package*.json ./
+
+# Instala dependencias de forma limpia
+RUN npm install --legacy-peer-deps
+
+# Copia el resto del código fuente
+COPY frontend/ ./
+
+# Define el puerto para Vite
+EXPOSE 5173
+
+# Comando de desarrollo
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

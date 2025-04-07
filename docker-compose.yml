@@ -1,0 +1,44 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app/frontend
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=http://backend:8000
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app/backend
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://postgres:Euromilan1824@db:5432/AS-recoleccion_datos
+      # Otras variables de entorno que quieras sobrescribir
+
+  db:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=Euromilan1824
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=AS-recoleccion_datos
+
+volumes:
+  postgres_data:
+

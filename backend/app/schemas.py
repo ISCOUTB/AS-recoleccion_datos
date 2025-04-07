@@ -66,7 +66,8 @@ class UserResponse(UserBase):
     semester: Optional[int] = None
     
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 # Esquema para token
 class Token(BaseModel):
@@ -91,7 +92,8 @@ class AcademicRecordResponse(BaseModel):
     updated_at: datetime
     
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 class CourseResponse(BaseModel):
     id: int
@@ -102,7 +104,8 @@ class CourseResponse(BaseModel):
     program: Optional[str] = None
     
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 class EnrollmentResponse(BaseModel):
     id: int
@@ -115,7 +118,8 @@ class EnrollmentResponse(BaseModel):
     course: CourseResponse
     
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 class NotificationResponse(BaseModel):
     id: int
@@ -126,7 +130,8 @@ class NotificationResponse(BaseModel):
     created_at: datetime
     
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 # Esquemas para encuestas
 class OptionResponse(BaseModel):
@@ -135,7 +140,8 @@ class OptionResponse(BaseModel):
     order: int
     
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 class QuestionResponse(BaseModel):
     id: int
@@ -146,7 +152,8 @@ class QuestionResponse(BaseModel):
     options: List[OptionResponse] = []
     
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 class SurveyResponse(BaseModel):
     id: int
@@ -157,13 +164,15 @@ class SurveyResponse(BaseModel):
     end_date: Optional[datetime] = None
     
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 class SurveyDetail(SurveyResponse):
     questions: List[QuestionResponse] = []
     
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 class AnswerSubmission(BaseModel):
     question_id: int
