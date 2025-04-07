@@ -4,7 +4,7 @@ import { useState, useRef, type ChangeEvent } from "react"
 import { User, Mail, Lock, Camera, Save, X, Eye, EyeOff } from "lucide-react"
 import "./ProfilePage.css"
 import { useNavigate } from "react-router-dom"
-import AvatarImage from "../assets/image.jpg"
+import AvatarImage from "../assets/students.png"
 
 interface UserProfile {
   name: string

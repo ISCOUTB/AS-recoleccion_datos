@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import "./App.css"
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
 import students from "./assets/students.png"
-import Register from "./components/Register"
+import Register from "./components/register"
 import Dashboard from "./pages/Dashboard"
 import Form from "./pages/Form"
 import NotFound from "./pages/NotFound"
@@ -12,6 +12,7 @@ import axios from "axios"
 import config from "./config"
 import ProfilePage from "./pages/ProfilePage"
 import HelpPage from "./pages/HelpPage"
+import { ThemeProvider } from "./context/ThemeContext";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("")
@@ -115,7 +116,9 @@ const Login: React.FC = () => {
         </div>
       </div>
     </div>
+    
   )
+  
 }
 
 // Componente para proteger rutas
@@ -137,6 +140,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const App: React.FC = () => {
   return (
+    <ThemeProvider>
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
@@ -162,6 +166,7 @@ const App: React.FC = () => {
         <Route path="/help" element={<HelpPage />} />
       </Routes>
     </Router>
+    </ThemeProvider>
   )
 }
 
