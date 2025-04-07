@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useRef, useEffect } from "react"
 import { Bell, Settings, CheckCircle, AlertCircle, Info, LogOut, User, Moon, Sun, HelpCircle } from "lucide-react"
 import "./ProfileHeader.css"
@@ -114,6 +112,12 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
     setShowSettings(false)
   }
 
+  // Navegar a la página de ayuda
+  const goToHelp = () => {
+    navigate("/help")
+    setShowSettings(false)
+  }
+
   return (
     <header className="profile-header">
       <div className="profile-info">
@@ -209,7 +213,7 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
                   {darkMode ? <Sun size={18} /> : <Moon size={18} />}
                   <span>{darkMode ? "Modo claro" : "Modo oscuro"}</span>
                 </button>
-                <button className="menu-item">
+                <button className="menu-item" onClick={goToHelp}>
                   <HelpCircle size={18} />
                   <span>Ayuda</span>
                 </button>

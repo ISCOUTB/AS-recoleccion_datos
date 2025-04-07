@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 
 import { useState, useEffect } from "react"
@@ -13,6 +11,7 @@ import NotFound from "./pages/NotFound"
 import axios from "axios"
 import config from "./config"
 import ProfilePage from "./pages/ProfilePage"
+import HelpPage from "./pages/HelpPage"
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("")
@@ -160,6 +159,7 @@ const App: React.FC = () => {
         />
         <Route path="*" element={<NotFound />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/help" element={<HelpPage />} />
       </Routes>
     </Router>
   )
