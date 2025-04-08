@@ -34,6 +34,7 @@ class Settings(BaseSettings):
         "http://localhost:5173",  # Vite default
         "http://127.0.0.1:5173",
         "http://127.0.0.1:3000",
+        "*",  # Permitir todas las origenes (solo para desarrollo)
     ]
     
     # Host y puerto para el servidor
@@ -42,6 +43,12 @@ class Settings(BaseSettings):
     
     # URL base para el backend (útil para la configuración del frontend)
     API_BASE_URL: str = os.getenv("API_BASE_URL", "http://localhost:8000")
+    
+    # Configuración para archivos
+    UPLOAD_DIR: str = "static"
+    AVATAR_DIR: str = "static/avatars"
+    ATTACHMENTS_DIR: str = "static/attachments"
+    MAX_UPLOAD_SIZE: int = 5 * 1024 * 1024  # 5MB
     
     class Config:
         env_file = ".env"

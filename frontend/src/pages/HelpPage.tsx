@@ -1,6 +1,10 @@
+"use client"
+
 import { useState, useRef, type ChangeEvent, type FormEvent } from "react"
-import { HelpCircle, Send, Upload, X, Check, ChevronDown, ChevronUp } from "lucide-react"
+import { HelpCircle, Send, Upload, X, Check, ChevronDown, ChevronUp, Loader } from "lucide-react"
 import "./HelpPage.css"
+import axios from "axios"
+import config from "../config"
 
 type FaqItem = {
   question: string
@@ -30,6 +34,9 @@ const HelpPage = () => {
 
   // Estado para controlar qué FAQ está abierta
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+
+  // Estado para indicar si se está enviando el formulario
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Referencia para el input de archivo
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -98,8 +105,9 @@ const HelpPage = () => {
   }
 
   // Manejador para enviar el formulario
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
+    setIsSubmitting(true)
 
     // Validar que los campos requeridos estén completos
     if (!formData.issueType || !formData.description) {
@@ -107,35 +115,69 @@ const HelpPage = () => {
         type: "error",
         message: "Por favor completa todos los campos requeridos.",
       })
+      setIsSubmitting(false)
       return
     }
 
-    // Aquí iría la lógica para enviar los datos al backend
-    console.log("Datos del formulario:", formData)
-    console.log("Archivos adjuntos:", attachments)
+    try {
+      const token = localStorage.getItem("token")
 
-    // Mostrar mensaje de éxito
-    setSubmitStatus({
-      type: "success",
-      message: "Tu solicitud ha sido enviada correctamente. Te contactaremos pronto.",
-    })
+      // Crear FormData para enviar archivos
+      const formDataToSend = new FormData()
+      formDataToSend.append("issue_type", formData.issueType)
+      formDataToSend.append("description", formData.description)
+      formDataToSend.append("priority", formData.priority)
 
-    // Limpiar el formulario después de enviar
-    setFormData({
-      issueType: "",
-      description: "",
-      email: "",
-      priority: "media",
-    })
-    setAttachments([])
+      if (formData.email) {
+        formDataToSend.append("contact_email", formData.email)
+      }
 
-    // Limpiar el mensaje después de 5 segundos
-    setTimeout(() => {
-      setSubmitStatus({
-        type: null,
-        message: "",
+      // Añadir archivos adjuntos
+      attachments.forEach((file, index) => {
+        formDataToSend.append(`attachment_${index}`, file)
       })
-    }, 5000)
+
+      // Enviar solicitud al backend
+      await axios.post(`${config.apiUrl}/support/ticket`, formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      })
+
+      // Mostrar mensaje de éxito
+      setSubmitStatus({
+        type: "success",
+        message: "Tu solicitud ha sido enviada correctamente. Te contactaremos pronto.",
+      })
+
+      // Limpiar el formulario después de enviar
+      setFormData({
+        issueType: "",
+        description: "",
+        email: "",
+        priority: "media",
+      })
+      setAttachments([])
+    } catch (error) {
+      console.error("Error al enviar el formulario:", error)
+
+      // Mostrar mensaje de error
+      setSubmitStatus({
+        type: "error",
+        message: "Ocurrió un error al enviar tu solicitud. Por favor intenta nuevamente.",
+      })
+    } finally {
+      setIsSubmitting(false)
+
+      // Limpiar el mensaje después de 5 segundos
+      setTimeout(() => {
+        setSubmitStatus({
+          type: null,
+          message: "",
+        })
+      }, 5000)
+    }
   }
 
   return (
@@ -247,9 +289,18 @@ const HelpPage = () => {
               )}
             </div>
 
-            <button type="submit" className="submit-button">
-              <Send size={18} />
-              <span>Enviar solicitud</span>
+            <button type="submit" className="submit-button" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader size={18} className="animate-spin" />
+                  <span>Enviando...</span>
+                </>
+              ) : (
+                <>
+                  <Send size={18} />
+                  <span>Enviar solicitud</span>
+                </>
+              )}
             </button>
           </form>
         </div>
@@ -296,4 +347,3 @@ const HelpPage = () => {
 }
 
 export default HelpPage
-

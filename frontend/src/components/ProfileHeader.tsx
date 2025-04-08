@@ -7,6 +7,7 @@ import { Bell, Settings, CheckCircle, AlertCircle, Info, LogOut, User, Moon, Sun
 import "./ProfileHeader.css"
 import { useTheme } from "../context/ThemeContext"
 import { useNavigate } from "react-router-dom"
+import config from "../config"
 
 interface Notification {
   id: number
@@ -134,10 +135,30 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
     window.location.href = "/"
   }
 
+  // Función para obtener la URL completa de la imagen
+  const getFullImageUrl = (url: string) => {
+    if (!url) return "/placeholder.svg?height=50&width=50"
+
+    // Si la URL ya es absoluta o es un placeholder, devolverla tal cual
+    if (url.startsWith("http") || url.startsWith("/placeholder")) {
+      return url
+    }
+
+    // Para rutas que comienzan con /static, usar la URL base sin /api
+    if (url.startsWith("/static")) {
+      // Extraer la base URL sin /api
+      const baseUrl = config.apiUrl.replace(/\/api\/?$/, "")
+      return `${baseUrl}${url}`
+    }
+
+    // Para otras rutas relativas
+    return `${config.apiUrl}${url}`
+  }
+
   return (
     <header className="profile-header">
       <div className="profile-info">
-        <img src={avatarUrl || "/placeholder.svg"} alt="Profile" className="avatar" />
+        <img src={getFullImageUrl(avatarUrl) || "/placeholder.svg"} alt="Profile" className="avatar" />
         <div className="user-details">
           <h2>{name}</h2>
           <p>{role}</p>

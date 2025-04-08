@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr, validator, Field
 import re
 from typing import Optional, List
 from datetime import datetime
+
 # Esquema base para usuario
 class UserBase(BaseModel):
     email: EmailStr
@@ -56,6 +57,31 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
+# Esquema para actualización de perfil
+class UserProfileUpdate(BaseModel):
+    full_name: Optional[str] = None
+    # Omitimos phone y bio porque no existen en la base de datos aún
+
+# Esquema para cambio de contraseña
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
+    
+    @validator('new_password')
+    def password_strength(cls, v):
+        # Validar fortaleza de contraseña
+        if len(v) < 8:
+            raise ValueError('La contraseña debe tener al menos 8 caracteres')
+        if not re.search(r'[A-Z]', v):
+            raise ValueError('La contraseña debe tener al menos una mayúscula')
+        if not re.search(r'[a-z]', v):
+            raise ValueError('La contraseña debe tener al menos una minúscula')
+        if not re.search(r'[0-9]', v):
+            raise ValueError('La contraseña debe tener al menos un número')
+        if not re.search(r'[^A-Za-z0-9]', v):
+            raise ValueError('La contraseña debe tener al menos un carácter especial')
+        return v
+
 # Esquema para respuesta de usuario
 class UserResponse(UserBase):
     id: int
@@ -64,10 +90,12 @@ class UserResponse(UserBase):
     student_id: Optional[str] = None
     program: Optional[str] = None
     semester: Optional[int] = None
+    phone: Optional[str] = None
+    bio: Optional[str] = None
+    avatar_url: Optional[str] = None
     
     class Config:
         from_attributes = True
-
 
 # Esquema para token
 class Token(BaseModel):
@@ -78,8 +106,6 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     email: Optional[str] = None
     user_id: Optional[int] = None
-
-
 
 class AcademicRecordResponse(BaseModel):
     id: int
@@ -94,7 +120,6 @@ class AcademicRecordResponse(BaseModel):
     class Config:
         from_attributes = True
 
-
 class CourseResponse(BaseModel):
     id: int
     code: str
@@ -105,7 +130,6 @@ class CourseResponse(BaseModel):
     
     class Config:
         from_attributes = True
-
 
 class EnrollmentResponse(BaseModel):
     id: int
@@ -120,7 +144,6 @@ class EnrollmentResponse(BaseModel):
     class Config:
         from_attributes = True
 
-
 class NotificationResponse(BaseModel):
     id: int
     user_id: int
@@ -132,7 +155,6 @@ class NotificationResponse(BaseModel):
     class Config:
         from_attributes = True
 
-
 # Esquemas para encuestas
 class OptionResponse(BaseModel):
     id: int
@@ -141,7 +163,6 @@ class OptionResponse(BaseModel):
     
     class Config:
         from_attributes = True
-
 
 class QuestionResponse(BaseModel):
     id: int
@@ -154,7 +175,6 @@ class QuestionResponse(BaseModel):
     class Config:
         from_attributes = True
 
-
 class SurveyResponse(BaseModel):
     id: int
     title: str
@@ -166,13 +186,11 @@ class SurveyResponse(BaseModel):
     class Config:
         from_attributes = True
 
-
 class SurveyDetail(SurveyResponse):
     questions: List[QuestionResponse] = []
     
     class Config:
         from_attributes = True
-
 
 class AnswerSubmission(BaseModel):
     question_id: int
@@ -182,3 +200,33 @@ class AnswerSubmission(BaseModel):
 class SurveySubmission(BaseModel):
     answers: List[AnswerSubmission]
 
+# Esquemas para tickets de soporte
+class TicketCreate(BaseModel):
+    issue_type: str
+    description: str
+    priority: str
+    contact_email: Optional[str] = None
+
+class TicketAttachmentResponse(BaseModel):
+    id: int
+    file_path: str
+    original_filename: str
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class TicketResponse(BaseModel):
+    id: int
+    user_id: Optional[int] = None
+    issue_type: str
+    description: str
+    priority: str
+    status: str
+    contact_email: Optional[str] = None
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    attachments: List[TicketAttachmentResponse] = []
+    
+    class Config:
+        from_attributes = True
