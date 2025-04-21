@@ -1,12 +1,13 @@
-FROM python:3.11-slim
+FROM python:alpine
 
 WORKDIR /app
 
 # Instalar dependencias del sistema necesarias para psycopg2
-RUN apt-get update && apt-get install -y \
+RUN apk add --no-cache \
     gcc \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+    musl-dev \
+    postgresql-dev \
+    python3-dev
 
 # Copiar requirements.txt primero para aprovechar la caché de Docker
 COPY backend/requirements.txt .

@@ -23,9 +23,10 @@ services:
     env_file:
       - ./backend/.env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
-      - DATABASE_URL=postgresql://postgres:Euromilan1824@db:5432/AS-recoleccion_datos
+      - DATABASE_URL=postgresql://postgres:Password@db:5432/AS-recoleccion_datos #Digitar la contraseña de Usuario postgres
       # Otras variables de entorno que quieras sobrescribir
 
   db:
@@ -35,10 +36,14 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=Euromilan1824
+      - POSTGRES_PASSWORD=Password #Digitar la contraseña de Usuario postgres
       - POSTGRES_USER=postgres
       - POSTGRES_DB=AS-recoleccion_datos
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
-
