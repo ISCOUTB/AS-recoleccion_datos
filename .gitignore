@@ -24,3 +24,5 @@ backend/env
 *.env
 \venv
 backup.sql
+__pycache__/
+*.pyc
