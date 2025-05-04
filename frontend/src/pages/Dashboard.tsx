@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { Routes, Route, useNavigate } from "react-router-dom"
 import axios from "axios"
 import config from "../config"
-import "./DashBoard.css"
+import "../styles/DashBoard.css"
 import Sidebar from "../components/SideBar"
 import ProfileHeader from "../components/ProfileHeader"
 import WelcomeBanner from "../components/WelcomeBanner"
@@ -15,7 +15,20 @@ import SchedulePage from "../pages/SchedulePage"
 import CoursesPage from "../pages/CoursesPage"
 import NotFound from "../pages/NotFound"
 import { ThemeProvider } from "../context/ThemeContext"
+const getFullImageUrl = (url: string) => {
+  if (!url) return "/placeholder.svg?height=150&width=150"
 
+  if (url.startsWith("http") || url.startsWith("/placeholder")) {
+    return url
+  }
+
+  if (url.startsWith("/static")) {
+    const baseUrl = config.apiUrl.replace(/\/api\/?$/, "")
+    return `${baseUrl}${url}`
+  }
+
+  return `${config.apiUrl}${url}`
+}
 interface UserData {
   id: number
   email: string
@@ -23,6 +36,7 @@ interface UserData {
   student_id: string
   program: string
   semester: number
+  avatar_url?: string 
   icfes_score?: number
 }
 
@@ -88,7 +102,7 @@ function Dashboard() {
           <ProfileHeader
             name={userData?.full_name || "Usuario"}
             role="Estudiante"
-            avatarUrl="/placeholder.svg?height=50&width=50"
+            avatarUrl={getFullImageUrl(userData?.avatar_url || "/placeholder.svg")}
           />
           <Routes>
             <Route

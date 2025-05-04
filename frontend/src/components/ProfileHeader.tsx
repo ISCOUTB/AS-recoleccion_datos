@@ -4,7 +4,7 @@ import React from "react"
 
 import { useState, useRef, useEffect } from "react"
 import { Bell, Settings, CheckCircle, AlertCircle, Info, LogOut, User, Moon, Sun, HelpCircle } from "lucide-react"
-import "./ProfileHeader.css"
+import "../styles/ProfileHeader.css"
 import { useTheme } from "../context/ThemeContext"
 import { useNavigate } from "react-router-dom"
 import config from "../config"
@@ -135,9 +135,8 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
     window.location.href = "/"
   }
 
-  // Función para obtener la URL completa de la imagen
   const getFullImageUrl = (url: string) => {
-    if (!url) return "/placeholder.svg?height=50&width=50"
+    if (!url) return "/placeholder.svg?height=150&width=150"
 
     // Si la URL ya es absoluta o es un placeholder, devolverla tal cual
     if (url.startsWith("http") || url.startsWith("/placeholder")) {
@@ -154,6 +153,7 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
     // Para otras rutas relativas
     return `${config.apiUrl}${url}`
   }
+
 
   return (
     <header className="profile-header">

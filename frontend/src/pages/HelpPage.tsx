@@ -2,7 +2,7 @@
 
 import { useState, useRef, type ChangeEvent, type FormEvent } from "react"
 import { HelpCircle, Send, Upload, X, Check, ChevronDown, ChevronUp, Loader } from "lucide-react"
-import "./HelpPage.css"
+import "../styles/HelpPage.css"
 import axios from "axios"
 import config from "../config"
 

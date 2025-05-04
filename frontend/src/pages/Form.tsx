@@ -1,5 +1,5 @@
 import { useState } from "react"
-import "./Form.css"
+import "../styles/Form.css"
 
 interface QuizOption {
   id: string

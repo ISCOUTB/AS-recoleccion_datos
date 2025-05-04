@@ -1,6 +1,6 @@
 import { NavLink, useLocation } from "react-router-dom"
 import { Home, BookOpen, Clock, Layers } from "lucide-react"
-import "./SideBar.css"
+import "../styles/SideBar.css"
 
 const Sidebar = () => {
   const location = useLocation()

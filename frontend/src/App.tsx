@@ -3,8 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import "./App.css"
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom"
 import students from "./assets/students.png"
 import Register from "./components/register"
 import Dashboard from "./pages/Dashboard"
@@ -14,13 +13,20 @@ import axios from "axios"
 import config from "./config"
 import ProfilePage from "./pages/ProfilePage"
 import HelpPage from "./pages/HelpPage"
+import AdminLayout from "./components/admin/Adminlayout"
+import AdminDashboard from "./pages/admin_pages/DashboardPage"
+
+import UsersPage from "./pages/admin_pages/UsersPage"
 import { ThemeProvider } from "./context/ThemeContext"
+import CoursesPage from "./pages/admin_pages/CoursesPage"
+import ReportsPage from "./pages/admin_pages/ReportsPage"
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
   // Verificar si ya hay una sesión activa
   useEffect(() => {
@@ -33,7 +39,7 @@ const Login: React.FC = () => {
             headers: { Authorization: `Bearer ${token}` },
           })
           // Si la petición es exitosa, el token es válido, redirigir al dashboard
-          window.location.href = "/dashboard"
+          navigate("/dashboard")
         } catch (err) {
           // Si hay un error, el token no es válido, eliminarlo
           localStorage.removeItem("token")
@@ -41,7 +47,7 @@ const Login: React.FC = () => {
       }
       verifyToken()
     }
-  }, [])
+  }, [navigate])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -55,7 +61,7 @@ const Login: React.FC = () => {
       })
 
       localStorage.setItem("token", response.data.access_token)
-      window.location.href = "/dashboard"
+      navigate("/dashboard")
     } catch (err: any) {
       console.error("Error de login:", err)
       setError(err.response?.data?.detail || "Error al iniciar sesión. Intente nuevamente.")
@@ -143,10 +149,18 @@ const Login: React.FC = () => {
 }
 
 // Componente mejorado para proteger rutas
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+const ProtectedRoute = ({
+  children,
+  requiredRole = null,
+}: {
+  children: React.ReactNode
+  requiredRole?: string | null
+}) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
+  const [userRole, setUserRole] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     const verifyAuth = async () => {
@@ -160,12 +174,22 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
       try {
         // Verificar si el token es válido haciendo una petición al endpoint /users/me
-        await axios.get(`${config.apiUrl}/users/me`, {
+        const response = await axios.get(`${config.apiUrl}/users/me`, {
           headers: { Authorization: `Bearer ${token}` },
         })
 
         // Si la petición es exitosa, el token es válido
         setIsAuthenticated(true)
+        setUserRole(response.data.role)
+
+        // Si el usuario es administrador y está intentando acceder a /dashboard, redirigirlo a /admin
+        if (
+          response.data.role === "ADMIN" &&
+          location.pathname === "/dashboard" &&
+          !location.pathname.includes("/admin")
+        ) {
+          navigate("/admin")
+        }
       } catch (error) {
         // Si hay un error, el token no es válido o ha expirado
         console.error("Error de autenticación:", error)
@@ -177,18 +201,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     }
 
     verifyAuth()
-
-    // Agregar un listener para el evento popstate (cuando se usa el botón de retroceso)
-    const handlePopState = () => {
-      verifyAuth()
-    }
-
-    window.addEventListener("popstate", handlePopState)
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState)
-    }
-  }, [navigate])
+  }, [navigate, location.pathname])
 
   // Listener para detectar cambios en el localStorage (por ejemplo, cuando se cierra sesión en otra pestaña)
   useEffect(() => {
@@ -208,7 +221,16 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <div className="loading-container">Verificando autenticación...</div>
   }
 
-  return isAuthenticated ? <>{children}</> : <Navigate to="/" />
+  if (!isAuthenticated) {
+    return <Navigate to="/" replace />
+  }
+
+  // Si se requiere un rol específico y el usuario no lo tiene, redirigir al dashboard
+  if (requiredRole && userRole !== requiredRole) {
+    return <Navigate to="/dashboard" replace />
+  }
+
+  return <>{children}</>
 }
 
 // Componente para detectar cambios en el token y forzar actualización
@@ -232,48 +254,30 @@ const AuthListener = () => {
   return null
 }
 
+
 const App: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
-
-  useEffect(() => {
-    // Verificar si hay un token en localStorage
-    const token = localStorage.getItem("token")
-    setIsAuthenticated(!!token)
-
-    // Agregar un listener para detectar cambios en el localStorage
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "token") {
-        setIsAuthenticated(!!e.newValue)
-      }
-    }
-
-    window.addEventListener("storage", handleStorageChange)
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange)
-    }
-  }, [])
-
   return (
     <ThemeProvider>
       <Router>
         <AuthListener />
         <Routes>
-          <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
-          <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Register />} />
-          <Route
-            path="/form"
-            element={
-              <ProtectedRoute>
-                <Form />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
           <Route
             path="/dashboard/*"
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/form"
+            element={
+              <ProtectedRoute>
+                <Form />
               </ProtectedRoute>
             }
           />
@@ -285,6 +289,52 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
+
+          {/* Rutas de administrador */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requiredRole="ADMIN">
+                <AdminLayout>
+                  <AdminDashboard />
+                </AdminLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute requiredRole="ADMIN">
+                <AdminLayout>
+                  <UsersPage />
+                </AdminLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/courses"
+            element={
+              <ProtectedRoute requiredRole="ADMIN">
+                <AdminLayout>
+                  <CoursesPage />
+                </AdminLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/reports"
+            element={
+              <ProtectedRoute requiredRole="ADMIN">
+                <AdminLayout>
+                  <ReportsPage />
+                </AdminLayout>
+              </ProtectedRoute>
+            }
+          />
+
           <Route path="/help" element={<HelpPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

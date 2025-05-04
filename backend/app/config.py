@@ -34,7 +34,6 @@ class Settings(BaseSettings):
         "http://localhost:5173",  # Vite default
         "http://127.0.0.1:5173",
         "http://127.0.0.1:3000",
-        "*",  # Permitir todas las origenes (solo para desarrollo)
     ]
     
     # Host y puerto para el servidor

@@ -1,4 +1,4 @@
-import "./WelcomeBanner.css"
+import "../styles/WelcomeBanner.css"
 
 interface WelcomeBannerProps {
     name: string

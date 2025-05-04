@@ -1,4 +1,4 @@
-import "./SchedulePage.css"
+import "../styles/SchedulePage.css"
 
 const SchedulePage = () => {
   return (
