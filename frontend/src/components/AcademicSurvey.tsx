@@ -5,7 +5,7 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import config from "../config"
-import "./AcademicSurvey.css"
+import "../styles/AcademicSurvey.css"
 
 interface Question {
   id: number

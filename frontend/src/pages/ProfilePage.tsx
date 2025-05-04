@@ -2,11 +2,10 @@
 
 import { useState, useEffect, useRef, type ChangeEvent } from "react"
 import { User, Mail, Lock, Camera, Save, X, Eye, EyeOff, Loader } from "lucide-react"
-import "./ProfilePage.css"
+import "../styles/ProfilePage.css"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import config from "../config"
-
 interface UserProfile {
   id: number
   full_name: string

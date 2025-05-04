@@ -1,5 +1,5 @@
 import { GraduationCap, Award, Calendar } from "lucide-react"
-import "./AcademicInfo.css"
+import "../styles/AcademicInfo.css"
 
 interface AcademicInfoProps {
   career: string

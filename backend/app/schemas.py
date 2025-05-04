@@ -1,8 +1,12 @@
+from enum import Enum
 from pydantic import BaseModel, EmailStr, validator, Field
 import re
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from datetime import datetime
-
+class UserRole(str, Enum):
+    STUDENT = "STUDENT"
+    TEACHER = "TEACHER"
+    ADMIN = "ADMIN"
 # Esquema base para usuario
 class UserBase(BaseModel):
     email: EmailStr
@@ -24,7 +28,8 @@ class UserCreate(UserBase):
     semester: Optional[int] = None
     # El campo icfes_score ahora es completamente opcional y no se incluye en el formulario inicial
     icfes_score: Optional[int] = None
-    
+    role: Optional[UserRole] = None
+
     @validator('password')
     def password_strength(cls, v):
         # Validar fortaleza de contraseña
@@ -52,6 +57,23 @@ class UserCreate(UserBase):
             raise ValueError('El puntaje ICFES debe estar entre 0 y 500')
         return v
 
+# Esquema para actulización de usuario
+class UserUpdate(BaseModel):
+    email: Optional[EmailStr] = None
+    full_name: Optional[str] = None
+    student_id: Optional[str] = None
+    program: Optional[str] = None
+    semester: Optional[int] = None
+    icfes_score: Optional[int] = None
+    role: Optional[UserRole] = None
+    is_active: Optional[bool] = None
+    password: Optional[str] = None
+    
+    @validator('icfes_score')
+    def validate_icfes_score(cls, v):
+        if v is not None and (v < 0 or v > 500):
+            raise ValueError('El puntaje ICFES debe estar entre 0 y 500')
+        return v
 # Esquema para login
 class UserLogin(BaseModel):
     email: EmailStr
@@ -60,7 +82,8 @@ class UserLogin(BaseModel):
 # Esquema para actualización de perfil
 class UserProfileUpdate(BaseModel):
     full_name: Optional[str] = None
-    # Omitimos phone y bio porque no existen en la base de datos aún
+    phone: Optional[str] = None
+    bio: Optional[str] = None
 
 # Esquema para cambio de contraseña
 class PasswordChange(BaseModel):
@@ -93,7 +116,9 @@ class UserResponse(UserBase):
     phone: Optional[str] = None
     bio: Optional[str] = None
     avatar_url: Optional[str] = None
-    
+    role: Optional[str] = None
+    is_admin: bool
+    last_login: Optional[datetime] = None
     class Config:
         from_attributes = True
 
@@ -101,11 +126,13 @@ class UserResponse(UserBase):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    user_role: str
 
 # Esquema para datos del token
 class TokenData(BaseModel):
     email: Optional[str] = None
     user_id: Optional[int] = None
+    role: Optional[str] = None
 
 class AcademicRecordResponse(BaseModel):
     id: int
@@ -230,3 +257,14 @@ class TicketResponse(BaseModel):
     
     class Config:
         from_attributes = True
+        
+class DashboardStats(BaseModel):
+    users: int
+    courses: int
+    participationRate: float
+    uptime: float
+class UserList(BaseModel):
+    items: List[UserResponse]
+    total: int
+    page: int
+    pages: int

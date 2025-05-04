@@ -1,9 +1,14 @@
-from sqlalchemy import Boolean, Column, Integer, String, DateTime, Float, ForeignKey, Text
+from sqlalchemy import Boolean, Column, Integer, String, DateTime, Float, ForeignKey, Text, Enum
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-
+import enum
 Base = declarative_base()
+
+class UserRole(str, enum.Enum):
+    STUDENT = "STUDENT"
+    TEACHER = "TEACHER"
+    ADMIN = "ADMIN"
 
 class User(Base):
     __tablename__ = "users"
@@ -27,7 +32,11 @@ class User(Base):
     phone = Column(String)
     bio = Column(Text)
     avatar_url = Column(String)
-    
+
+    # Añadir campo de rol
+    role = Column(Enum(UserRole), default=UserRole.STUDENT)
+    last_login = Column(DateTime(timezone=True), nullable=True)
+        
     # Relaciones
     academic_records = relationship("AcademicRecord", back_populates="user")
     enrollments = relationship("Enrollment", back_populates="user")

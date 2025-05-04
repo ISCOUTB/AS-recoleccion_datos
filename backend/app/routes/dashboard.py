@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Dict, Any
 from app.database import get_db
-from app.models.models import User, AcademicRecord, Enrollment, Course, Notification
-from app.schemas import UserResponse, AcademicRecordResponse, EnrollmentResponse, CourseResponse, NotificationResponse
+from app.models.models import User, AcademicRecord, Enrollment, Course, Notification, UserRole
+from app.schemas import UserResponse, AcademicRecordResponse, EnrollmentResponse, CourseResponse, NotificationResponse, DashboardStats
 from app.auth.jwt import get_current_active_user
+from app.utils.serialization import sqlalchemy_to_dict
 
 router = APIRouter()
 
@@ -58,3 +59,38 @@ def mark_notification_as_read(
     db.commit()
     return {"message": "Notificación marcada como leída"}
 
+@router.get("/admin/stats", response_model=DashboardStats)
+def get_admin_stats(
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """Obtiene estadísticas para el panel de administración."""
+    # Verificar si el usuario es administrador
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes permisos para acceder a esta información"
+        )
+    
+    # Contar usuarios activos
+    active_users_count = db.query(User).filter(User.is_active == True).count()
+    
+    # Contar cursos disponibles
+    courses_count = db.query(Course).count()
+    
+    # Calcular tasa de participación (ejemplo)
+    # En un caso real, esto podría ser más complejo
+    participation_rate = 89.5  # Valor de ejemplo
+    
+    # Uptime del sistema (ejemplo)
+    uptime = 99.8  # Valor de ejemplo
+    
+    # Crear un diccionario con los datos
+    stats_dict = {
+        "users": active_users_count,
+        "courses": courses_count,
+        "participationRate": participation_rate,
+        "uptime": uptime
+    }
+    
+    return stats_dict

@@ -1,4 +1,4 @@
-import "./CoursesPage.css"
+import "../styles/CoursesPage.css"
 
 const CoursesPage = () => {
   return (
