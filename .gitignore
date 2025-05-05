@@ -23,4 +23,5 @@ backend/env
 *.sw?
 *.env
 \venv
-backup.sql
+*.sql
+/backend/app/__pycache__/
