@@ -25,3 +25,4 @@ backend/env
 \venv
 *.sql
 /backend/app/__pycache__/
+backend/.env.docker

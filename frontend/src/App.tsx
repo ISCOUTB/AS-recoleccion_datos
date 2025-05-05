@@ -13,7 +13,7 @@ import axios from "axios"
 import config from "./config"
 import ProfilePage from "./pages/ProfilePage"
 import HelpPage from "./pages/HelpPage"
-import AdminLayout from "./components/admin/Adminlayout"
+import AdminLayout from "./components/admin/tempAdmin"
 import AdminDashboard from "./pages/admin_pages/DashboardPage"
 
 import UsersPage from "./pages/admin_pages/UsersPage"
