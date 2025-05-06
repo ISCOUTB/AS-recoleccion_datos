@@ -30,13 +30,8 @@ def main():
     print("Conectando a la base de datos...")
     
     # Conectar a la base de datos
-    conn = psycopg2.connect(
-        dbname=db_name,
-        user=db_user,
-        password=db_pass,
-        host=db_host,
-        port=db_port
-    )
+    conn = psycopg2.connect(DATABASE_URL)
+
     
     # Establecer nivel de aislamiento
     conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)

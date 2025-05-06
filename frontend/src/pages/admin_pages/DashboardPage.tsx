@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
 import { UserPlus, BookOpen, Activity, BarChart3 } from "lucide-react"
-import WelcomeCard from "../../components/WelcomeCard"
-import StatsCard from "../../components/StatsCard"
+import WelcomeCard from "../../components/admin/WelcomeCard"
+import StatsCard from "../../components/admin/StatsCard"
 import config from "../../config"
 import "../../styles/AdminDashboard.css"
 

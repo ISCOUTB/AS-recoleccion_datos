@@ -1,4 +1,68 @@
 /* App.css (modificado para eliminar scroll en PC) */
+:root {
+  /* Colores compartidos */
+  --primary-color: #4a6cf7;
+  --primary-dark: #3a5bd9;
+  --welcome-card-bg: #10b981;
+  --notification-badge: #ef4444;
+
+  /* Modo claro */
+  --bg-light: #f9fafb;
+  --text-light: #111827;
+  --card-bg-light: #ffffff;
+  --border-color-light: #e5e7eb;
+  --hover-color-light: rgba(0, 0, 0, 0.05);
+  --text-muted-light: #6b7280;
+
+  /* Modo oscuro - más negro como solicitado */
+  --bg-dark: #0a0a0a;
+  --text-dark: #ffffff;
+  --card-bg-dark: #121212;
+  --border-color-dark: #1f1f1f;
+  --hover-color-dark: rgba(255, 255, 255, 0.1);
+  --text-muted-dark: #9ca3af;
+
+  /* Sidebar colores */
+  --sidebar-bg-dark: #121212;
+  --sidebar-bg-light: #ffffff;
+  --sidebar-text-dark: #ffffff;
+  --sidebar-text-light: #111827;
+  --sidebar-border-dark: #1f1f1f;
+  --sidebar-border-light: #e5e7eb;
+
+  /* Colores de eventos */
+  --event-class: #4a6cf7;
+  --event-meeting: #10b981;
+  --event-deadline: #ef4444;
+  --event-other: #f59e0b;
+}
+
+/* Modo claro por defecto */
+:root {
+  --bg: var(--bg-light);
+  --text: var(--text-light);
+  --card-bg: var(--card-bg-light);
+  --border-color: var(--border-color-light);
+  --hover-color: var(--hover-color-light);
+  --text-muted: var(--text-muted-light);
+  --sidebar-bg: var(--sidebar-bg-light);
+  --sidebar-text: var(--sidebar-text-light);
+  --sidebar-border: var(--sidebar-border-light);
+}
+
+/* Modo oscuro */
+.dark {
+  --bg: var(--bg-dark);
+  --text: var(--text-dark);
+  --card-bg: var(--card-bg-dark);
+  --border-color: var(--border-color-dark);
+  --hover-color: var(--hover-color-dark);
+  --text-muted: var(--text-muted-dark);
+  --sidebar-bg: var(--sidebar-bg-dark);
+  --sidebar-text: var(--sidebar-text-dark);
+  --sidebar-border: var(--sidebar-border-dark);
+}
+
 /* Estilos generales */
 * {
   box-sizing: border-box;

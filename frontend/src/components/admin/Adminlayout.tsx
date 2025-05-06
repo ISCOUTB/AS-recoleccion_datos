@@ -4,8 +4,9 @@ import type React from "react";
 import { NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Home, Users, BookOpen, BarChart3, LogOut } from "lucide-react";
+import { Home, Users, BookOpen, BarChart3 } from "lucide-react";
 import config from "../../config";
+import Header from "./Header";
 import "../../styles/AdminLayout.css";
 
 interface AdminLayoutProps {
@@ -65,10 +66,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     fetchUserData();
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/");
-  };
+
 
   // Función para obtener la URL completa de la imagen
   const getFullImageUrl = (url?: string) => {
@@ -156,24 +154,14 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       {/* Contenido principal */}
       <div className="main-content">
         {/* Header */}
-        <header className="main-header">
-          <div className="user-profile">
-            <img
-              src={getFullImageUrl(userData?.avatar_url) || "/placeholder.svg"}
-              alt="Avatar"
-              className="avatar"
-            />
-            <div className="user-info">
-              <h3>{userData?.full_name}</h3>
-              <p>Administrador</p>
-            </div>
-          </div>
-          <div className="header-actions">
-            <button className="icon-button" onClick={handleLogout}>
-              <LogOut size={20} />
-            </button>
-          </div>
-        </header>
+        <Header
+          userName={userData?.full_name || "Usuario"}
+          userRole="Administrador"
+          avatarUrl={getFullImageUrl(userData?.avatar_url)}
+          onProfileClick={() => console.log("Perfil clickeado")}
+          onToggleSidebar={() => console.log("Sidebar toggled")}
+        >
+        </Header>
 
         {/* Contenido principal */}
         <main>{children}</main>
