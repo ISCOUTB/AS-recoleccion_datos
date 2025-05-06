@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 import os
-from app.database import engine
+from app.database import db_connection
 from app.models.models import Base
 from app.routes.users import router as users_router
 from app.routes.dashboard import router as dashboard_router
@@ -13,7 +13,7 @@ from app.routes.support import router as support_router
 from app.config import settings
 
 # Crear tablas en la base de datos
-Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=db_connection.get_engine())
 
 # Crear directorios para archivos estáticos si no existen
 os.makedirs(os.path.join("static", "avatars"), exist_ok=True)
