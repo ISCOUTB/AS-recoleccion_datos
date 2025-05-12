@@ -42,16 +42,22 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         email: str = payload.get("sub")
         user_id: int = payload.get("user_id")
         
+        # Añadir logging para depuración
+        print(f"Token payload: email={email}, user_id={user_id}")
+        
         if email is None or user_id is None:
             raise credentials_exception
         
         token_data = TokenData(email=email, user_id=user_id)
-    except JWTError:
+    except JWTError as e:
+        # Añadir logging para depuración
+        print(f"JWT Error: {str(e)}")
         raise credentials_exception
     
     # Buscar usuario en la base de datos
     user = db.query(User).filter(User.id == token_data.user_id).first()
     if user is None:
+        print(f"Usuario no encontrado: user_id={token_data.user_id}")
         raise credentials_exception
     
     return user
