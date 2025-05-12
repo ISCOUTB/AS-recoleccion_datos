@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Home, Users, BookOpen, BarChart3 } from "lucide-react";
 import config from "../../config";
 import Header from "./Header";
-import "../../styles/AdminLayout.css";
+import "../../styles/Adminlayout.css";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
