@@ -12,19 +12,29 @@ services:
     environment:
       - VITE_API_URL=http://backend:8000
 
-  backend:
+  backend_prestart:
     build:
-      context: .
-      dockerfile: Dockerfile.backend
+      context: backend
+      dockerfile: Dockerfile
+    command: bash scripts/prestart.sh
+    env_file:
+      - backend/.env.docker
+    depends_on:
+      - db
+
+  backend:  
+    build:
+      context: backend
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     volumes:
       - ./backend:/app/backend
     env_file:
-      - ./backend/.env
+      - backend/.env
     depends_on:
       - db
-  
+      - backend_prestart
 
   db:
     image: postgres:15
