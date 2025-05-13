@@ -13,7 +13,7 @@ from app.routes.support import router as support_router
 from app.config import settings
 
 # Crear tablas en la base de datos
-Base.metadata.create_all(bind=db_connection.get_engine())
+# Base.metadata.create_all(bind=db_connection.get_engine())
 
 # Crear directorios para archivos estáticos si no existen
 os.makedirs(os.path.join("static", "avatars"), exist_ok=True)

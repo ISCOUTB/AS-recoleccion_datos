@@ -1,23 +1,15 @@
-FROM python:alpine
+FROM python:3.13-slim
 
 WORKDIR /app
 
-# Instalar dependencias necesarias para compilar psycopg2
-RUN apk update && apk add --no-cache \
-    gcc \
-    musl-dev \
-    python3-dev \
-    postgresql-dev \
-    && rm -rf /var/cache/apk/*
-
 # Copiar requirements.txt primero para aprovechar la caché de Docker
-COPY backend/requirements.txt .
+COPY requirements.txt .
 
 # Instalar dependencias de Python
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiar el código de la aplicación
-COPY backend/ ./backend
+COPY . ./backend
 
 # Establecer el directorio de trabajo en la carpeta backend
 WORKDIR /app/backend

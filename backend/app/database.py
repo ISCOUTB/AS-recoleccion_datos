@@ -1,7 +1,6 @@
 #import os
 from sqlalchemy import create_engine, inspect
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 #from dotenv import load_dotenv
 from app.config import settings
 
@@ -91,52 +90,6 @@ engine = db_connection.get_engine()
 SessionLocal = db_connection.SessionLocal
 Base = db_connection.get_base()
 
-class DatabaseConnection:
-    _instance = None
-    
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(DatabaseConnection, cls).__new__(cls)
-            cls._instance._initialize()
-        return cls._instance
-    
-    def _initialize(self):
-        """Inicializa la conexión a la base de datos."""
-        # Crear engine con pool de conexiones adaptando a entorno
-        if settings.ENVIRONMENT == "development":
-            # Para desarrollo, configuración simple
-            self.engine = create_engine(
-                settings.DATABASE_URL,
-                echo=True,  # Mostrar queries SQL en consola (útil para desarrollo)
-                pool_size=5,
-                max_overflow=2,
-                pool_timeout=30,
-                pool_recycle=1800
-            )
-        else:
-            # Para producción, configuración más robusta
-            self.engine = create_engine(
-                settings.DATABASE_URL,
-                pool_size=10,
-                max_overflow=5,
-                pool_timeout=30,
-                pool_recycle=1800,
-                echo=False  # No mostrar queries en producción
-            )
-        
-        self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
-    
-    def get_engine(self):
-        """Retorna la instancia del engine."""
-        return self.engine
-    
-    def get_session(self):
-        """Retorna una nueva sesión."""
-        return self.SessionLocal()
-
-
-# Instancia global del singleton
-db_connection = DatabaseConnection()
 
 def get_db():
     """Proporciona una sesión de base de datos."""
@@ -146,6 +99,26 @@ def get_db():
     finally:
         db.close()
 
+
 def init_db():
     """Inicializa la base de datos creando todas las tablas definidas."""
     return db_connection.init_db()
+
+
+if __name__ == "__main__":
+    import time
+    from sqlalchemy import select
+
+    session = db_connection.get_session()
+
+    while True:
+        try:
+            with session:
+                # Probar la conexión a la base de datos
+                session.execute(select(1))
+                session.commit()
+            break
+        except Exception as e:
+            print(f"Error al inicializar la base de datos: {e}")
+            print("Reintentando en 5 segundos...")
+            time.sleep(5)
