@@ -7,6 +7,7 @@ import enum
 import psycopg2
 import bcrypt 
 from dotenv import load_dotenv
+import re
 
 # Cargar variables de entorno
 load_dotenv()
@@ -22,35 +23,42 @@ def get_connection_params():
     database_url = os.getenv("DATABASE_URL")
     
     if database_url:
-        # Parsear la URL de la base de datos
-        # Formato: postgresql://usuario:contrasena@host:puerto/nombre_db
+        print(f"DATABASE_URL encontrada: {database_url[:20]}...")
+        
         try:
-            database_url = database_url.replace("postgresql://", "")
-            db_parts = database_url.split("/")
-            db_name = db_parts[1].split("?")[0] if "?" in db_parts[1] else db_parts[1]
-            db_conn_parts = db_parts[0].split("@")
-            db_user_pass = db_conn_parts[0].split(":")
-            db_user = db_user_pass[0]
-            db_pass = db_user_pass[1] if len(db_user_pass) > 1 else ""
-            db_host_port = db_conn_parts[1].split(":")
-            db_host = db_host_port[0]
-            db_port = db_host_port[1] if len(db_host_port) > 1 else "5432"
+            # Manejar URLs de SQLAlchemy (postgresql+psycopg2://)
+            # Extraer los componentes de la URL usando expresiones regulares
+            if "postgresql+psycopg2://" in database_url:
+                # Reemplazar el esquema SQLAlchemy con el esquema PostgreSQL estándar
+                database_url = database_url.replace("postgresql+psycopg2://", "postgresql://")
+                print(f"URL convertida a formato PostgreSQL estándar: {database_url[:20]}...")
+            
+            # Ahora procesar la URL estándar de PostgreSQL
+            if database_url.startswith("postgresql://"):
+                # Extraer componentes usando expresiones regulares
+                match = re.match(r'postgresql://(?:([^:@]+)(?::([^@]*))?@)?([^:/]+)(?::(\d+))?/([^?]+)', database_url)
+                
+                if match:
+                    db_user, db_pass, db_host, db_port, db_name = match.groups()
+                    # Usar valores predeterminados para los componentes que faltan
+                    db_port = db_port or "5432"
+                    print(f"Componentes extraídos: Host={db_host}, Puerto={db_port}, BD={db_name}, Usuario={db_user}")
+                    return db_user, db_pass, db_host, db_port, db_name
+                else:
+                    print("No se pudo parsear la URL de la base de datos, usando valores predeterminados")
+            else:
+                print(f"Formato de URL no reconocido: {database_url[:20]}...")
         except Exception as e:
             print(f"Error al parsear DATABASE_URL: {e}")
-            # Usar valores predeterminados si hay error en el parseo
-            db_user = os.getenv("DB_USER", "postgres")
-            db_pass = os.getenv("DB_PASSWORD", "postgres")
-            db_host = os.getenv("DB_HOST", "localhost")
-            db_port = os.getenv("DB_PORT", "5432")
-            db_name = os.getenv("DB_NAME", "as_recoleccion_datos")
-    else:
-        # Usar valores predeterminados si no hay DATABASE_URL
-        db_user = os.getenv("DB_USER", "postgres")
-        db_pass = os.getenv("DB_PASSWORD", "postgres")
-        db_host = os.getenv("DB_HOST", "localhost")
-        db_port = os.getenv("DB_PORT", "5432")
-        db_name = os.getenv("DB_NAME", "as_recoleccion_datos")
     
+    # Si llegamos aquí, usamos valores predeterminados o variables de entorno individuales
+    db_user = os.getenv("POSTGRES_USER", "postgres")
+    db_pass = os.getenv("POSTGRES_PASSWORD", "postgres")
+    db_host = os.getenv("POSTGRES_HOST", "db")  # Usar 'db' como nombre común del servicio en Docker
+    db_port = os.getenv("POSTGRES_PORT", "5432")
+    db_name = os.getenv("POSTGRES_DB", "as_recoleccion_datos")
+    
+    print(f"Usando parámetros de conexión: Host={db_host}, Puerto={db_port}, BD={db_name}, Usuario={db_user}")
     return db_user, db_pass, db_host, db_port, db_name
 
 def get_password_hash(password):
