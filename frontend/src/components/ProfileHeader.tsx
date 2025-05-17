@@ -1,8 +1,6 @@
 "use client"
 
-import React from "react"
-
-import { useState, useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import { Bell, Settings, CheckCircle, AlertCircle, Info, LogOut, User, Moon, Sun, HelpCircle } from "lucide-react"
 import "../styles/ProfileHeader.css"
 import { useTheme } from "../context/ThemeContext"

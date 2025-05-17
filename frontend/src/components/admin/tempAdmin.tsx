@@ -1,9 +1,8 @@
 "use client";
 
 import type React from "react";
-import { NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { Home, Users, BookOpen, BarChart3 } from "lucide-react";
 import config from "../../config";
 import Header from "./Header";
@@ -155,7 +154,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       <div className="main-content">
         {/* Header */}
         <Header
-          userName={userData?.full_name || "Usuario"}
+          userName={userData?.full_name ?? "Usuario"}
           userRole="Administrador"
           avatarUrl={getFullImageUrl(userData?.avatar_url)}
           onProfileClick={() => console.log("Perfil clickeado")}

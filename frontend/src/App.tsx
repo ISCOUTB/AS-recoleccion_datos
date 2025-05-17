@@ -15,11 +15,11 @@ import ProfilePage from "./pages/ProfilePage"
 import HelpPage from "./pages/HelpPage"
 import AdminLayout from "./components/admin/tempAdmin"
 import AdminDashboard from "./pages/admin_pages/DashboardPage"
-
 import UsersPage from "./pages/admin_pages/UsersPage"
 import { ThemeProvider } from "./context/ThemeContext"
 import CoursesPage from "./pages/admin_pages/CoursesPage"
 import ReportsPage from "./pages/admin_pages/ReportsPage"
+import "./styles/ThemeFix.css"
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("")
@@ -41,7 +41,7 @@ const Login: React.FC = () => {
           // Si la petición es exitosa, el token es válido, redirigir al dashboard
           navigate("/dashboard")
         } catch (err) {
-          // Si hay un error, el token no es válido, eliminarlo
+          console.log(err)
           localStorage.removeItem("token")
         }
       }
@@ -64,7 +64,7 @@ const Login: React.FC = () => {
       navigate("/dashboard")
     } catch (err: any) {
       console.error("Error de login:", err)
-      setError(err.response?.data?.detail || "Error al iniciar sesión. Intente nuevamente.")
+      setError(err.response?.data?.detail ?? "Error al iniciar sesión. Intente nuevamente.")
     } finally {
       setLoading(false)
     }
@@ -79,7 +79,7 @@ const Login: React.FC = () => {
         </div>
         <div className="illustration-container">
           <img
-            src={students || "/placeholder.svg?height=400&width=400"}
+            src={students ?? "/placeholder.svg?height=400&width=400"}
             alt="Estudiantes colaborando"
             className="illustration"
           />
