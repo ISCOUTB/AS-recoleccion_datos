@@ -15,10 +15,8 @@ class Settings(BaseSettings):
     PROJECT_VERSION: str = "1.0.0"
     
     # Configuración de la base de datos
-    DATABASE_URL: str = os.getenv(
-        "DATABASE_URL", 
-        "postgresql://postgres:postgres@localhost:5432/AS-recoleccion_datos"
-    )
+    # IMPORTANTE: Definir DATABASE_URL en el archivo .env, nunca en el código fuente.
+    DATABASE_URL: str = os.getenv("DATABASE_URL")
     
     # Seguridad
     SECRET_KEY: str = os.getenv(

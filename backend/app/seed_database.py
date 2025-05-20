@@ -24,40 +24,34 @@ def get_connection_params():
     
     if database_url:
         print(f"DATABASE_URL encontrada: {database_url[:20]}...")
-        
         try:
             # Manejar URLs de SQLAlchemy (postgresql+psycopg2://)
-            # Extraer los componentes de la URL usando expresiones regulares
             if "postgresql+psycopg2://" in database_url:
-                # Reemplazar el esquema SQLAlchemy con el esquema PostgreSQL estándar
                 database_url = database_url.replace("postgresql+psycopg2://", "postgresql://")
                 print(f"URL convertida a formato PostgreSQL estándar: {database_url[:20]}...")
-            
-            # Ahora procesar la URL estándar de PostgreSQL
             if database_url.startswith("postgresql://"):
-                # Extraer componentes usando expresiones regulares
-                match = re.match(r'postgresql://(?:([^:@]+)(?::([^@]*))?@)?([^:/]+)(?::(\d+))?/([^?]+)', database_url)
-                
+                match = re.match(r'postgresql://(?:([^:@]+)(?::([^@]*))?@)?([^:/]+)(?::(\\d+))?/([^?]+)', database_url)
                 if match:
                     db_user, db_pass, db_host, db_port, db_name = match.groups()
-                    # Usar valores predeterminados para los componentes que faltan
                     db_port = db_port or "5432"
-                    print(f"Componentes extraídos: Host={db_host}, Puerto={db_port}, BD={db_name}, Usuario={db_user}")
+                    if not db_pass:
+                        print("ADVERTENCIA: La contraseña de la base de datos no está definida en la URL.")
                     return db_user, db_pass, db_host, db_port, db_name
                 else:
-                    print("No se pudo parsear la URL de la base de datos, usando valores predeterminados")
+                    print("No se pudo parsear la URL de la base de datos, usando valores de entorno individuales")
             else:
                 print(f"Formato de URL no reconocido: {database_url[:20]}...")
         except Exception as e:
             print(f"Error al parsear DATABASE_URL: {e}")
     
-    # Si llegamos aquí, usamos valores predeterminados o variables de entorno individuales
-    db_user = os.getenv("POSTGRES_USER", "postgres")
-    db_pass = os.getenv("POSTGRES_PASSWORD", "postgres")
-    db_host = os.getenv("POSTGRES_HOST", "db")  # Usar 'db' como nombre común del servicio en Docker
+    # Si llegamos aquí, usamos variables de entorno individuales (sin valores por defecto sensibles)
+    db_user = os.getenv("POSTGRES_USER")
+    db_pass = os.getenv("POSTGRES_PASSWORD")
+    db_host = os.getenv("POSTGRES_HOST", "db")
     db_port = os.getenv("POSTGRES_PORT", "5432")
-    db_name = os.getenv("POSTGRES_DB", "as_recoleccion_datos")
-    
+    db_name = os.getenv("POSTGRES_DB")
+    if not db_user or not db_pass or not db_name:
+        raise ValueError("Faltan variables de entorno requeridas para la conexión a la base de datos. Verifica POSTGRES_USER, POSTGRES_PASSWORD y POSTGRES_DB.")
     print(f"Usando parámetros de conexión: Host={db_host}, Puerto={db_port}, BD={db_name}, Usuario={db_user}")
     return db_user, db_pass, db_host, db_port, db_name
 

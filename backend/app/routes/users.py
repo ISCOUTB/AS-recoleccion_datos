@@ -429,25 +429,29 @@ async def delete_avatar(
     filename: str,
     current_user: User = Depends(get_current_active_user)
 ):
-    """Elimina un archivo de avatar antiguo."""
+    """Elimina un archivo de avatar antiguo de forma segura."""
     try:
-        # Verificar que el archivo pertenezca a la carpeta de avatares
-        if not filename or ".." in filename:
+        # Validar que el nombre del archivo sea seguro y no contenga rutas
+        safe_filename = os.path.basename(filename)
+        if not safe_filename or safe_filename != filename or any(c in filename for c in ["..", "/", "\\"]):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Nombre de archivo inválido"
             )
-        
-        # Construir la ruta del archivo
-        avatar_path = os.path.join("static", "avatars", filename)
-        
+        # Construir la ruta absoluta del archivo
+        avatar_dir = os.path.abspath(os.path.join("static", "avatars"))
+        avatar_path = os.path.abspath(os.path.join(avatar_dir, safe_filename))
+        # Verificar que el archivo esté dentro del directorio de avatares
+        if not avatar_path.startswith(avatar_dir):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Ruta de archivo no permitida"
+            )
         # Verificar que el archivo exista
         if not os.path.exists(avatar_path):
             return {"message": "El archivo no existe o ya fue eliminado"}
-        
         # Eliminar el archivo
         os.remove(avatar_path)
-        
         return {"message": "Avatar eliminado correctamente"}
     except Exception as e:
         raise HTTPException(
