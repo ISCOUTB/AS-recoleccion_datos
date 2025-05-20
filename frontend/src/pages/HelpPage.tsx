@@ -258,7 +258,7 @@ const HelpPage = () => {
             </div>
 
             <div className="form-group">
-              <label>Adjuntar capturas de pantalla (opcional)</label>
+              <label htmlFor="file-upload-input">Adjuntar capturas de pantalla (opcional)</label>
               <div className="file-upload-container">
                 <button type="button" className="file-upload-button" onClick={() => fileInputRef.current?.click()}>
                   <Upload size={18} />
