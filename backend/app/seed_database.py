@@ -31,7 +31,7 @@ def get_connection_params():
                 database_url = database_url.replace("postgresql+psycopg2://", "postgresql://")
                 print("URL convertida a formato PostgreSQL estándar.")
             if database_url.startswith("postgresql://"):
-                # IMPORTANTE: La contraseña solo debe estar en la variable de entorno, nunca en el código fuente.
+
                 match = re.match(r'postgresql://(?:([^:@]+)(?::([^@]*))?@)?([^:/]+)(?::(\\d+))?/([^?]+)', database_url)
                 if match:
                     db_user, db_pass, db_host, db_port, db_name = match.groups()

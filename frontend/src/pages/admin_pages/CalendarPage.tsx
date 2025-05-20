@@ -243,26 +243,26 @@ const CalendarPage = () => {
 
             <div className="calendar-days">
               {calendarDays.map((dayObj, index) => (
-                <div
-                  key={index}
-                  className={`calendar-day ${!dayObj.isCurrentMonth ? "inactive" : ""} ${
-                    dayObj.day &&
-                    selectedDate &&
-                    dayObj.date?.getDate() === selectedDate.getDate() &&
-                    dayObj.date?.getMonth() === selectedDate.getMonth() &&
-                    dayObj.date?.getFullYear() === selectedDate.getFullYear()
-                      ? "selected"
-                      : ""
-                  }`}
-                  onClick={() => dayObj.day && dayObj.date && setSelectedDate(dayObj.date)}
-                >
-                  {dayObj.day && (
-                    <>
-                      <span className="day-number">{dayObj.day}</span>
-                      {dayObj.hasEvents && <span className="event-indicator"></span>}
-                    </>
-                  )}
-                </div>
+                dayObj.day && dayObj.date ? (
+                  <button
+                    key={index}
+                    type="button"
+                    className={`calendar-day ${!dayObj.isCurrentMonth ? "inactive" : ""} ${
+                      selectedDate &&
+                      dayObj.date.getDate() === selectedDate.getDate() &&
+                      dayObj.date.getMonth() === selectedDate.getMonth() &&
+                      dayObj.date.getFullYear() === selectedDate.getFullYear()
+                        ? "selected"
+                        : ""
+                    }`}
+                    onClick={() => setSelectedDate(dayObj.date)}
+                  >
+                    <span className="day-number">{dayObj.day}</span>
+                    {dayObj.hasEvents && <span className="event-indicator"></span>}
+                  </button>
+                ) : (
+                  <div key={index} className="calendar-day inactive"></div>
+                )
               ))}
             </div>
           </div>

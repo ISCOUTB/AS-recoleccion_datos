@@ -189,8 +189,9 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
               <div className="dropdown-content">
                 {notifications.length > 0 ? (
                   notifications.map((notification) => (
-                    <div
+                    <button
                       key={notification.id}
+                      type="button"
                       className={`notification-item ${notification.type} ${notification.read ? "read" : ""}`}
                       onClick={() => markAsRead(notification.id)}
                     >
@@ -201,7 +202,7 @@ const ProfileHeader = ({ name, role, avatarUrl }: ProfileHeaderProps) => {
                         <p>{notification.message}</p>
                         <span className="notification-time">{notification.time}</span>
                       </div>
-                    </div>
+                    </button>
                   ))
                 ) : (
                   <div className="empty-notifications">

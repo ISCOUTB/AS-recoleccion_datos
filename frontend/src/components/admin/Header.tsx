@@ -222,8 +222,9 @@ const Header = ({ userName, userRole, avatarUrl }: HeaderProps) => {
               <div className="dropdown-content">
                 {notifications.length > 0 ? (
                   notifications.map((notification) => (
-                    <div
+                    <button
                       key={notification.id}
+                      type="button"
                       className={`notification-item ${notification.type} ${notification.read ? "read" : ""}`}
                       onClick={(e) => markAsRead(notification.id, e)}
                     >
@@ -234,7 +235,7 @@ const Header = ({ userName, userRole, avatarUrl }: HeaderProps) => {
                         <p>{notification.message}</p>
                         <span className="notification-time">{notification.time}</span>
                       </div>
-                    </div>
+                    </button>
                   ))
                 ) : (
                   <div className="empty-notifications">
