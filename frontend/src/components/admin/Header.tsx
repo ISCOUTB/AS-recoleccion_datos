@@ -180,11 +180,6 @@ const Header = ({ userName, userRole, avatarUrl }: HeaderProps) => {
     return `${config.apiUrl}${url}`
   }
 
-  // Prevenir cierre de menú al hacer clic dentro
-  const handleMenuClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
-  }
-
   return (
     <header className="main-header">
       <div className="user-profile">
@@ -207,7 +202,9 @@ const Header = ({ userName, userRole, avatarUrl }: HeaderProps) => {
           </button>
 
           {showNotifications && (
-            <div className="dropdown-menu notifications-menu" onClick={handleMenuClick}>
+            <div
+              className="dropdown-menu notifications-menu"
+            >
               <div className="dropdown-header">
                 <h3>Notificaciones</h3>
                 <button
@@ -270,7 +267,7 @@ const Header = ({ userName, userRole, avatarUrl }: HeaderProps) => {
           </button>
 
           {showSettings && (
-            <div className="dropdown-menu settings-menu" onClick={handleMenuClick}>
+            <div className="dropdown-menu settings-menu">
               <div className="dropdown-header">
                 <h3>Configuración</h3>
               </div>

@@ -271,6 +271,8 @@ const HelpPage = () => {
                   multiple
                   accept="image/*,.pdf,.doc,.docx"
                   className="hidden-input"
+                  id="file-upload-input"
+                  aria-label="Adjuntar archivos"
                 />
                 <p className="field-hint">Formatos permitidos: imágenes, PDF, Word (máx. 5MB por archivo)</p>
               </div>
