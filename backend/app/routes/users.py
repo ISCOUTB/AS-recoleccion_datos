@@ -11,6 +11,7 @@ from app.config import settings
 import os
 import shutil
 from uuid import uuid4
+import re
 
 router = APIRouter()
 
@@ -121,16 +122,26 @@ async def update_profile(
         # Crear directorio para avatares si no existe
         avatar_dir = os.path.join("static", "avatars")
         os.makedirs(avatar_dir, exist_ok=True)
-        
-        # Generar nombre único para el archivo
+
+        # Validar y obtener extensión segura
         file_extension = os.path.splitext(avatar.filename)[1]
+        if not file_extension or not re.match(r"^\.[a-zA-Z0-9]{1,5}$", file_extension):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Extensión de archivo no permitida"
+            )
+        # Generar nombre único para el archivo
         avatar_filename = f"{uuid4()}{file_extension}"
-        avatar_path = os.path.join(avatar_dir, avatar_filename)
-        
+        avatar_path = os.path.abspath(os.path.join(avatar_dir, avatar_filename))
+        # Verificar que el archivo esté dentro del directorio de avatares
+        if not avatar_path.startswith(os.path.abspath(avatar_dir)):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Ruta de archivo no permitida"
+            )
         # Guardar archivo
         with open(avatar_path, "wb") as buffer:
             shutil.copyfileobj(avatar.file, buffer)
-        
         # Actualizar ruta del avatar en la base de datos
         avatar_url = f"/static/avatars/{avatar_filename}"
         current_user.avatar_url = avatar_url

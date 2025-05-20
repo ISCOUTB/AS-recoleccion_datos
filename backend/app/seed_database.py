@@ -23,24 +23,27 @@ def get_connection_params():
     database_url = os.getenv("DATABASE_URL")
     
     if database_url:
-        print(f"DATABASE_URL encontrada: {database_url[:20]}...")
+        # No imprimir la contraseña ni la URL completa por seguridad
+        print("DATABASE_URL encontrada y cargada desde variables de entorno.")
         try:
             # Manejar URLs de SQLAlchemy (postgresql+psycopg2://)
             if "postgresql+psycopg2://" in database_url:
                 database_url = database_url.replace("postgresql+psycopg2://", "postgresql://")
-                print(f"URL convertida a formato PostgreSQL estándar: {database_url[:20]}...")
+                print("URL convertida a formato PostgreSQL estándar.")
             if database_url.startswith("postgresql://"):
+                # IMPORTANTE: La contraseña solo debe estar en la variable de entorno, nunca en el código fuente.
                 match = re.match(r'postgresql://(?:([^:@]+)(?::([^@]*))?@)?([^:/]+)(?::(\\d+))?/([^?]+)', database_url)
                 if match:
                     db_user, db_pass, db_host, db_port, db_name = match.groups()
                     db_port = db_port or "5432"
                     if not db_pass:
                         print("ADVERTENCIA: La contraseña de la base de datos no está definida en la URL.")
+                    # Nunca imprimir la contraseña
                     return db_user, db_pass, db_host, db_port, db_name
                 else:
                     print("No se pudo parsear la URL de la base de datos, usando valores de entorno individuales")
             else:
-                print(f"Formato de URL no reconocido: {database_url[:20]}...")
+                print("Formato de URL no reconocido para la base de datos.")
         except Exception as e:
             print(f"Error al parsear DATABASE_URL: {e}")
     
