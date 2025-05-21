@@ -242,10 +242,10 @@ const CalendarPage = () => {
             </div>
 
             <div className="calendar-days">
-              {calendarDays.map((dayObj, index) => (
+              {calendarDays.map((dayObj) => (
                 dayObj.day && dayObj.date ? (
                   <button
-                    key={index}
+                    key={"day"}
                     type="button"
                     className={`calendar-day ${!dayObj.isCurrentMonth ? "inactive" : ""} ${
                       selectedDate &&
@@ -261,7 +261,7 @@ const CalendarPage = () => {
                     {dayObj.hasEvents && <span className="event-indicator"></span>}
                   </button>
                 ) : (
-                  <div key={index} className="calendar-day inactive"></div>
+                  <div key={"day-inactive"} className="calendar-day inactive"></div>
                 )
               ))}
             </div>

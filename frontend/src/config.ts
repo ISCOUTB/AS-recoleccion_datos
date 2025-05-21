@@ -17,10 +17,10 @@ const configs: Record<string, Config> = {
 };
 
 // Determinar el entorno actual
-const env = import.meta.env.MODE || "development";
+const env = import.meta.env.MODE ?? "development";
 
 // Exportar la configuración para el entorno actual
-export const config = configs[env] || configs.development;
+export const config = configs[env] ?? configs.development;
 
 // Para depuración
 console.log(`Running in ${config.environment} mode with API URL ${config.apiUrl}`);

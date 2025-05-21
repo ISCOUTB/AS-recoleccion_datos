@@ -280,7 +280,7 @@ const HelpPage = () => {
               {attachments.length > 0 && (
                 <div className="attachments-list">
                   {attachments.map((file, index) => (
-                    <div key={index} className="attachment-item">
+                    <div key={`attachment`} className="attachment-item">
                       <span className="attachment-name">{file.name}</span>
                       <button type="button" className="remove-attachment" onClick={() => removeAttachment(index)}>
                         <X size={16} />
@@ -312,7 +312,7 @@ const HelpPage = () => {
             <h2>Preguntas frecuentes</h2>
             <div className="faq-list">
               {faqList.map((faq, index) => (
-                <div key={index} className="faq-item">
+                <div key={"faq"} className="faq-item">
                   <button className="faq-question" onClick={() => toggleFaq(index)}>
                     <span>{faq.question}</span>
                     {openFaq === index ? <ChevronUp size={20} /> : <ChevronDown size={20} />}

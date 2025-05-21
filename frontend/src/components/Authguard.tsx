@@ -11,7 +11,7 @@ interface AuthGuardProps {
   children: React.ReactNode
 }
 
-export function AuthGuard({ children }: AuthGuardProps) {
+export function AuthGuard({ children }: Readonly<AuthGuardProps>) {
   const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
 

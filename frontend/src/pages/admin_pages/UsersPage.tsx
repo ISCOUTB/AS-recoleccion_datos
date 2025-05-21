@@ -109,8 +109,8 @@ const UsersPage = () => {
 
         if (response.ok) {
           const data = await response.json();
-          setUsers(data.items || []);
-          setTotalPages(data.pages || 1);
+          setUsers(data.items ?? []);
+          setTotalPages(data.pages ?? 1);
           setError(null);
         } else {
           throw new Error("Error en la respuesta del servidor");
@@ -160,6 +160,7 @@ const UsersPage = () => {
       setError("Error al cambiar estado del usuario");
     }
   };
+
   const validateForm = () => {
     const errors: { [key: string]: string } = {};
 
@@ -184,7 +185,7 @@ const UsersPage = () => {
       errors.password = "La contraseña debe tener al menos 8 caracteres.";
     } else if (modalMode === "add" && !/[A-Z]/.test(formData.password!)) {
       errors.password = "La contraseña debe tener al menos una mayúscula.";
-    } else if (modalMode === "add" && !/[0-9]/.test(formData.password!)) {
+    } else if (modalMode === "add" && !/\d/.test(formData.password!)) {
       errors.password = "La contraseña debe tener al menos un número.";
     } else if (
       modalMode === "add" &&
@@ -260,9 +261,9 @@ const UsersPage = () => {
       full_name: user.full_name,
       email: user.email,
       role: user.role,
-      student_id: user.student_id || "",
-      program: user.program || "",
-      semester: user.semester || 1,
+      student_id: user.student_id ?? "",
+      program: user.program ?? "",
+      semester: user.semester ?? 1,
     });
     setShowModal(true);
     setActionMenuOpen(null);

@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useState, useContext, useEffect, type ReactNode } from "react"
+import { createContext, useState, useContext, useEffect, useMemo, type ReactNode } from "react"
 
 type ThemeContextType = {
   darkMode: boolean
@@ -10,7 +10,6 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  // Verificar si hay una preferencia guardada en localStorage
   const [darkMode, setDarkMode] = useState(() => {
     if (typeof window !== "undefined") {
       const savedTheme = localStorage.getItem("darkMode")
@@ -19,7 +18,6 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     return false
   })
 
-  // Aplicar el tema cuando cambia el modo
   useEffect(() => {
     if (darkMode) {
       document.documentElement.setAttribute("data-theme", "dark")
@@ -31,20 +29,25 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       document.body.classList.remove("dark")
     }
 
-    // Guardar preferencia en localStorage
     if (typeof window !== "undefined") {
       localStorage.setItem("darkMode", JSON.stringify(darkMode))
     }
   }, [darkMode])
 
   const toggleDarkMode = () => {
-    setDarkMode(!darkMode)
+    setDarkMode((prev: boolean) => !prev)
   }
 
-  return <ThemeContext.Provider value={{ darkMode, toggleDarkMode }}>{children}</ThemeContext.Provider>
+  // ✅ useMemo para evitar recrear el objeto en cada render
+  const contextValue = useMemo(() => ({ darkMode, toggleDarkMode }), [darkMode])
+
+  return (
+    <ThemeContext.Provider value={contextValue}>
+      {children}
+    </ThemeContext.Provider>
+  )
 }
 
-// Hook personalizado para usar el contexto
 export const useTheme = () => {
   const context = useContext(ThemeContext)
   if (context === undefined) {

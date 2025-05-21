@@ -207,7 +207,7 @@ const AcademicSurvey = () => {
               <textarea
                 className="text-answer"
                 placeholder="Escribe tu respuesta aquí..."
-                value={answers[question.id]?.answer_text || ""}
+                value={answers[question.id]?.answer_text ?? ""}
                 onChange={(e) => handleTextAnswer(question.id, e.target.value)}
               />
             )}

@@ -35,10 +35,9 @@
   --event-meeting: #10b981;
   --event-deadline: #ef4444;
   --event-other: #f59e0b;
-}
 
-/* Modo claro por defecto */
-:root {
+  /* Modo claro por defecto */ 
+
   --bg: var(--bg-light);
   --text: var(--text-light);
   --card-bg: var(--card-bg-light);

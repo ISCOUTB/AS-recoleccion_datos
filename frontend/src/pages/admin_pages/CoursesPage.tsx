@@ -77,8 +77,8 @@ const CoursesPage = () => {
 
   const filteredCourses = courses.filter(
     (course) =>
-      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      course.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ??
+      course.category.toLowerCase().includes(searchTerm.toLowerCase()) ??
       course.instructor.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 

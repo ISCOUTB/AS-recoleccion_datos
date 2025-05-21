@@ -100,9 +100,9 @@ function Dashboard() {
         <Sidebar />
         <main className="main-content">
           <ProfileHeader
-            name={userData?.full_name || "Usuario"}
+            name={userData?.full_name ?? "Usuario"}
             role="Estudiante"
-            avatarUrl={getFullImageUrl(userData?.avatar_url || "/placeholder.svg")}
+            avatarUrl={getFullImageUrl(userData?.avatar_url ?? "/placeholder.svg")}
           />
           <Routes>
             <Route
@@ -110,17 +110,17 @@ function Dashboard() {
               element={
                 <div className="content-wrapper">
                   <WelcomeBanner
-                    name={userData?.full_name?.split(" ")[0] || "Usuario"}
+                    name={userData?.full_name?.split(" ")[0] ?? "Usuario"}
                     message="Tu progreso académico está en buen camino"
-                    average={academicData?.average_score || 0}
+                    average={academicData?.average_score ?? 0}
                   />
                   <AcademicInfo
-                    career={userData?.program || "No especificado"}
-                    semester={`${userData?.semester || 0}° Semestre`}
-                    credits={academicData?.credits_completed || 0}
-                    totalCredits={academicData?.total_credits || 0}
-                    period={academicData?.period || "No especificado"}
-                    status={academicData?.status || "No especificado"}
+                    career={userData?.program ?? "No especificado"}
+                    semester={`${userData?.semester ?? 0}° Semestre`}
+                    credits={academicData?.credits_completed ?? 0}
+                    totalCredits={academicData?.total_credits ?? 0}
+                    period={academicData?.period ?? "No especificado"}
+                    status={academicData?.status ?? "No especificado"}
                   />
                   <AcademicSurvey />
                 </div>

@@ -20,9 +20,6 @@ interface HeaderProps {
   userName: string
   userRole: string
   avatarUrl: string
-  onProfileClick?: () => void
-  onToggleSidebar?: () => void
-  children?: React.ReactNode
 }
 
 const Header = ({ userName, userRole, avatarUrl }: HeaderProps) => {

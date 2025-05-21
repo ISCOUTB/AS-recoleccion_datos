@@ -109,14 +109,14 @@ const ProfilePage = () => {
         const userData = response.data
         setProfile({
           id: userData.id,
-          full_name: userData.full_name || "",
-          email: userData.email || "",
+          full_name: userData.full_name ?? "",
+          email: userData.email ?? "",
           role: "Estudiante",
-          student_id: userData.student_id || "",
-          phone: userData.phone || "",
-          bio: userData.bio || "",
-          program: userData.program || "",
-          semester: userData.semester || 0,
+          student_id: userData.student_id ?? "",
+          phone: userData.phone ?? "",
+          bio: userData.bio ?? "",
+          program: userData.program ?? "",
+          semester: userData.semester ?? 0,
         })
 
         if (userData.avatar_url) {
@@ -279,7 +279,7 @@ const ProfilePage = () => {
       console.error("Error al cambiar la contraseña:", error)
 
       if (axios.isAxiosError(error) && error.response?.data?.detail) {
-        setErrors((prev) => ({ ...prev, password: error.response?.data?.detail || "Error desconocido" }))
+        setErrors((prev) => ({ ...prev, password: error.response?.data?.detail ?? "Error desconocido" }))
       } else {
         setErrors((prev) => ({ ...prev, password: "Error al cambiar la contraseña" }))
       }
@@ -353,7 +353,7 @@ const ProfilePage = () => {
       console.error("Error al actualizar el perfil:", error)
 
       if (axios.isAxiosError(error) && error.response?.data?.detail) {
-        setErrors((prev) => ({ ...prev, general: error.response?.data?.detail || "Error desconocido" }))
+        setErrors((prev) => ({ ...prev, general: error.response?.data?.detail ?? "Error desconocido" }))
       } else {
         setErrors((prev) => ({ ...prev, general: "Error al actualizar el perfil" }))
       }
@@ -408,7 +408,7 @@ const ProfilePage = () => {
         <div className="profile-section">
           <div className="avatar-section">
             <div className="avatar-container">
-              <img src={previewUrl || getFullImageUrl(avatarUrl)} alt="Foto de perfil" className="profile-avatar" />
+              <img src={previewUrl ?? getFullImageUrl(avatarUrl)} alt="Foto de perfil" className="profile-avatar" />
               <button className="avatar-edit-button" onClick={triggerFileInput}>
                 <Camera size={"1.5em"} />
               </button>
@@ -594,7 +594,7 @@ const ProfilePage = () => {
               <ul>
                 <li className={passwords.new.length >= 8 ? "met" : ""}>Tener al menos 8 caracteres</li>
                 <li className={/[A-Z]/.test(passwords.new) ? "met" : ""}>Incluir al menos una letra mayúscula</li>
-                <li className={/[0-9]/.test(passwords.new) ? "met" : ""}>Incluir al menos un número</li>
+                <li className={/\d/.test(passwords.new) ? "met" : ""}>Incluir al menos un número</li>
                 <li className={/[^A-Za-z0-9]/.test(passwords.new) ? "met" : ""}>
                   Incluir al menos un carácter especial
                 </li>

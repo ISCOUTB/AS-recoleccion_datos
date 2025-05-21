@@ -275,6 +275,7 @@ body {
   width: 100%;
   padding: 15px;
   background: none;
+  background-color: var(--card-bg);
   border: none;
   text-align: left;
   font-size: 15px;
@@ -282,11 +283,6 @@ body {
   color: var(--text-color);
   cursor: pointer;
   transition: background-color 0.2s;
-}
-
-/* Corregir el fondo de los elementos desplegables */
-.faq-question {
-  background-color: var(--card-bg);
 }
 
 .faq-question:hover {

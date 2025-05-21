@@ -59,7 +59,7 @@ export default function QuizInterface() {
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1)
-      setSelectedOption(answers[currentQuestionIndex - 1] || null)
+      setSelectedOption(answers[currentQuestionIndex - 1] ?? null)
     }
   }
 
@@ -78,7 +78,7 @@ export default function QuizInterface() {
         // Avanzar a la siguiente pregunta
         setCurrentQuestionIndex(currentQuestionIndex + 1)
         // Establecer la opción seleccionada si ya se respondió esta pregunta
-        setSelectedOption(answers[currentQuestionIndex + 1] || null)
+        setSelectedOption(answers[currentQuestionIndex + 1] ?? null)
       }
     }
   }
@@ -104,7 +104,7 @@ export default function QuizInterface() {
           <div className="results-summary">
             {questions.map((question, index) => {
               const answerId = answers[index]
-              const answerText = question.options.find((opt) => opt.id === answerId)?.text || "No respondida"
+              const answerText = question.options.find((opt) => opt.id === answerId)?.text ?? "No respondida"
 
               return (
                 <div key={question.id} className="result-item">

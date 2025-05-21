@@ -59,7 +59,7 @@ const Register: React.FC = () => {
       newErrors.password = "La contraseña debe tener al menos una mayúscula";
     } else if (!/[a-z]/.test(formData.password)) {
       newErrors.password = "La contraseña debe tener al menos una minúscula";
-    } else if (!/[0-9]/.test(formData.password)) {
+    } else if (!/\d/.test(formData.password)) {
       newErrors.password = "La contraseña debe tener al menos un número";
     } else if (!/[^A-Za-z0-9]/.test(formData.password)) {
       newErrors.password = "La contraseña debe tener al menos un carácter especial";
@@ -144,7 +144,7 @@ const Register: React.FC = () => {
         </div>
         <div className="illustration-container">
           <img
-            src={students || "/placeholder.svg?height=400&width=400"}
+            src={students ?? "/placeholder.svg?height=400&width=400"}
             alt="Estudiantes colaborando"
             className="illustration"
           />

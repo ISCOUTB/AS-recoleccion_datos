@@ -268,10 +268,11 @@
 
 /* Notification items */
 .notification-item {
+  width: 100%;
   padding: 1rem 1.25rem;
+  background-color: var(--card-bg);
   display: flex;
   align-items: flex-start;
-  border-bottom: 1px solid var(--border-color, #e5e7eb);
   transition: background-color 0.2s ease;
   cursor: pointer;
 }
