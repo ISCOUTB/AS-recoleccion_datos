@@ -301,8 +301,8 @@ const ProfilePage = () => {
       // Preparar datos para enviar
       const formData = new FormData()
       formData.append("full_name", profile.full_name)
-      formData.append("phone", profile.phone || "")
-      formData.append("bio", profile.bio || "")
+      formData.append("phone", profile.phone ?? "")
+      formData.append("bio", profile.bio ?? "")
 
       // Si hay un nuevo avatar, añadirlo al FormData
       if (newAvatar) {
