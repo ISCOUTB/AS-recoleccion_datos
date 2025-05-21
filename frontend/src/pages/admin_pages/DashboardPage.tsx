@@ -24,6 +24,8 @@ interface User {
   last_login?: string
 }
 
+type UserStatus = "active" | "inactive"; 
+
 const AdminDashboard = () => {
   const [stats, setStats] = useState<StatsData>({
     users: 0,
@@ -87,7 +89,7 @@ const AdminDashboard = () => {
 
           setRecentUsers(mockRecentUsers)
           setError(null)
-        } catch (apiError: any) {
+        } catch (apiError: unknown) {
           console.error("Error al cargar datos del dashboard:", apiError)
 
           // Proporcionar datos de ejemplo para que la interfaz siga funcionando
@@ -131,7 +133,7 @@ const AdminDashboard = () => {
           setRecentUsers(mockRecentUsers)
           setError("Error al cargar datos del servidor. Se están mostrando datos de ejemplo.")
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Error general:", err)
         setError("Error al procesar la solicitud")
       } finally {
@@ -155,9 +157,14 @@ const AdminDashboard = () => {
     }
   }
 
-  const getStatusClass = (isActive: boolean) => {
-    return isActive ? "status-active" : "status-inactive"
-  }
+  const getStatusClass = (status: UserStatus): string => {
+    const statusClasses: Record<UserStatus, string> = {
+      active: "status-active",
+      inactive: "status-inactive",
+    };
+
+    return statusClasses[status];
+  };
 
   const formatDate = (dateString?: string): string => {
     if (!dateString) return "Nunca"
@@ -240,7 +247,7 @@ const AdminDashboard = () => {
                     <td>{user.email}</td>
                     <td>{translateRole(user.role)}</td>
                     <td>
-                      <span className={`status-badge ${getStatusClass(user.is_active)}`}>
+                      <span className={`status-badge ${getStatusClass(user.is_active ? "active" : "inactive")}`}>
                         {user.is_active ? "Activo" : "Inactivo"}
                       </span>
                     </td>

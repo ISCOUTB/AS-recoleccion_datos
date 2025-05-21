@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Search,
   UserPlus,
@@ -39,6 +39,8 @@ interface UserFormData {
   semester?: number;
 }
 
+type UserStatus = "active" | "inactive"; 
+
 const UsersPage = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,18 +66,12 @@ const UsersPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Cargar usuarios desde la API
-  useEffect(() => {
-    fetchUsers();
-  }, [currentPage, roleFilter, statusFilter, searchTerm]);
-
-  const fetchUsers = async () => {
+ const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      // Construir parámetros de consulta
       const params: any = {
         skip: (currentPage - 1) * 10,
         limit: 10,
@@ -94,7 +90,6 @@ const UsersPage = () => {
       }
 
       try {
-        // Construir URL con parámetros de consulta
         const queryParams = new URLSearchParams();
         Object.entries(params).forEach(([key, value]) => {
           queryParams.append(key, value as string);
@@ -115,16 +110,21 @@ const UsersPage = () => {
         } else {
           throw new Error("Error en la respuesta del servidor");
         }
-      } catch (apiError: any) {
+      } catch (apiError: unknown) {
         console.error("Error al cargar usuarios:", apiError);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error general:", err);
       setError("Error al procesar la solicitud");
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, roleFilter, statusFilter, searchTerm]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
 
   const handleActionClick = (userId: number) => {
     setActionMenuOpen(actionMenuOpen === userId ? null : userId);
@@ -155,7 +155,7 @@ const UsersPage = () => {
       } else {
         throw new Error("Error al cambiar estado del usuario");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error al cambiar estado del usuario:", err);
       setError("Error al cambiar estado del usuario");
     }
@@ -164,57 +164,73 @@ const UsersPage = () => {
   const validateForm = () => {
     const errors: { [key: string]: string } = {};
 
-    if (!formData.full_name.trim()) {
-      errors.full_name = "El nombre completo es obligatorio.";
-    }
-
-    if (!formData.email.trim()) {
-      errors.email = "El correo electrónico es obligatorio.";
-    } else if (!/^[\w-.]+@[\w-]+\.(edu\.co)$/.test(formData.email)) {
-      errors.email = "El correo debe ser institucional (*.edu.co).";
-    }
-
-    if (!formData.role) {
-      errors.role = "El rol es obligatorio.";
-    }
-
-    if (
-      modalMode === "add" &&
-      (!formData.password || formData.password.length < 8)
-    ) {
-      errors.password = "La contraseña debe tener al menos 8 caracteres.";
-    } else if (modalMode === "add" && !/[A-Z]/.test(formData.password!)) {
-      errors.password = "La contraseña debe tener al menos una mayúscula.";
-    } else if (modalMode === "add" && !/\d/.test(formData.password!)) {
-      errors.password = "La contraseña debe tener al menos un número.";
-    } else if (
-      modalMode === "add" &&
-      !/[^A-Za-z0-9]/.test(formData.password!)
-    ) {
-      errors.password =
-        "La contraseña debe tener al menos un carácter especial.";
-    }
-
-    if (formData.role === "STUDENT") {
-      if (!formData.student_id?.trim()) {
-        errors.student_id =
-          "El ID de estudiante es obligatorio para estudiantes.";
+    const validateFullName = () => {
+      if (!formData.full_name.trim()) {
+        errors.full_name = "El nombre completo es obligatorio.";
       }
+    };
+
+    const validateEmail = () => {
+      if (!formData.email.trim()) {
+        errors.email = "El correo electrónico es obligatorio.";
+      } else if (!/^[\w-.]+@[\w-]+\.(edu\.co)$/.test(formData.email)) {
+        errors.email = "El correo debe ser institucional (*.edu.co).";
+      }
+    };
+
+    const validateRole = () => {
+      if (!formData.role) {
+        errors.role = "El rol es obligatorio.";
+      }
+    };
+
+    const validatePassword = () => {
+      if (modalMode !== "add") return;
+
+      const pwd = formData.password ?? "";
+
+      if (pwd.length < 8) {
+        errors.password = "La contraseña debe tener al menos 8 caracteres.";
+      } else if (!/[A-Z]/.test(pwd)) {
+        errors.password = "La contraseña debe tener al menos una mayúscula.";
+      } else if (!/\d/.test(pwd)) {
+        errors.password = "La contraseña debe tener al menos un número.";
+      } else if (!/[^A-Za-z0-9]/.test(pwd)) {
+        errors.password =
+          "La contraseña debe tener al menos un carácter especial.";
+      }
+    };
+
+    const validateStudentFields = () => {
+      if (formData.role !== "STUDENT") return;
+
+      if (!formData.student_id?.trim()) {
+        errors.student_id = "El ID de estudiante es obligatorio para estudiantes.";
+      }
+
       if (!formData.program?.trim()) {
         errors.program = "El programa es obligatorio para estudiantes.";
       }
+
       if (
         formData.semester &&
         (formData.semester < 1 || formData.semester > 12)
       ) {
         errors.semester = "El semestre debe estar entre 1 y 12.";
       }
-    }
+  };
+
+    // Ejecutar validaciones
+    validateFullName();
+    validateEmail();
+    validateRole();
+    validatePassword();
+    validateStudentFields();
 
     setFormErrors(errors);
-
     return Object.keys(errors).length === 0;
-  };
+};
+
 
   const handleDeleteUser = async (userId: number) => {
     try {
@@ -233,7 +249,7 @@ const UsersPage = () => {
       } else {
         throw new Error("Error al eliminar usuario");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error al eliminar usuario:", err);
       setError("Error al eliminar usuario");
     }
@@ -338,7 +354,7 @@ const UsersPage = () => {
 
       setShowModal(false);
       setError(null);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error al guardar usuario:", err);
       setError("Error al guardar usuario");
     }
@@ -357,9 +373,15 @@ const UsersPage = () => {
     }
   };
 
-  const getStatusClass = (isActive: boolean) => {
-    return isActive ? "status-active" : "status-inactive";
+  const getStatusClass = (status: UserStatus): string => {
+    const statusClasses: Record<UserStatus, string> = {
+      active: "status-active",
+      inactive: "status-inactive",
   };
+
+  return statusClasses[status];
+};
+
 
   const formatLastLogin = (lastLogin?: string) => {
     if (!lastLogin) return "Nunca";
@@ -485,7 +507,7 @@ const UsersPage = () => {
                       <td>
                         <span
                           className={`status-badge ${getStatusClass(
-                            user.is_active
+                            user.is_active ? "active" : "inactive"
                           )}`}
                         >
                           {user.is_active ? "Activo" : "Inactivo"}

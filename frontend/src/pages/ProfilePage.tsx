@@ -309,7 +309,7 @@ const ProfilePage = () => {
         formData.append("avatar", newAvatar)
 
         // Indicar que se debe eliminar la imagen anterior
-        if (previousAvatarUrl && previousAvatarUrl.includes("/static/avatars/")) {
+        if (previousAvatarUrl?.includes("/static/avatars/")) {
           formData.append("delete_previous_avatar", "true")
         }
       }
