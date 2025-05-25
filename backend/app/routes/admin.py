@@ -56,7 +56,7 @@ async def upload_excel_data(
             detail="Solo los administradores pueden cargar datos"
         )
     
-    # Validar tipo de archivo
+# Safe: ext is validated and temp_filename is not user-controlled
     ext = os.path.splitext(file.filename)[1].lower()
     if ext not in ('.xlsx', '.xls'):
         raise HTTPException(
