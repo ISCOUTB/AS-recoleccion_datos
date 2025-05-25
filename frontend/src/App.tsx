@@ -15,10 +15,7 @@ import ProfilePage from "./pages/ProfilePage"
 import HelpPage from "./pages/HelpPage"
 import AdminLayout from "./components/admin/tempAdmin"
 import AdminDashboard from "./pages/admin_pages/DashboardPage"
-import UsersPage from "./pages/admin_pages/UsersPage"
 import { ThemeProvider } from "./context/ThemeContext"
-import CoursesPage from "./pages/admin_pages/CoursesPage"
-import ReportsPage from "./pages/admin_pages/ReportsPage"
 import "./styles/ThemeFix.css"
 
 const Login: React.FC = () => {
@@ -74,7 +71,7 @@ const Login: React.FC = () => {
     <div className="container login-container">
       <div className="left-section">
         <div className="text-container">
-          <h1>SCIENCE STEM</h1>
+          <h1>EarlySTEM</h1>
           <h2>Un impulso más para seguir adelante</h2>
         </div>
         <div className="illustration-container">
@@ -90,7 +87,7 @@ const Login: React.FC = () => {
         <div className="form-container">
           {/* Logo visible en móviles */}
           <div className="mobile-logo">
-            <h1>SCIENCE STEM</h1>
+            <h1>EarlySTEM</h1>
             <h2>Un impulso más para seguir adelante</h2>
           </div>
 
@@ -297,39 +294,6 @@ const App: React.FC = () => {
               <ProtectedRoute requiredRole="ADMIN">
                 <AdminLayout>
                   <AdminDashboard />
-                </AdminLayout>
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/admin/users"
-            element={
-              <ProtectedRoute requiredRole="ADMIN">
-                <AdminLayout>
-                  <UsersPage />
-                </AdminLayout>
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/admin/courses"
-            element={
-              <ProtectedRoute requiredRole="ADMIN">
-                <AdminLayout>
-                  <CoursesPage />
-                </AdminLayout>
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/admin/reports"
-            element={
-              <ProtectedRoute requiredRole="ADMIN">
-                <AdminLayout>
-                  <ReportsPage />
                 </AdminLayout>
               </ProtectedRoute>
             }

@@ -2,11 +2,11 @@
 
 import type React from "react";
 import { useState, useEffect } from "react";
-import { useNavigate, NavLink } from "react-router-dom";
-import { Home, Users, BookOpen, BarChart3 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import config from "../../config";
 import Header from "./Header";
-import "../../styles/Adminlayout.css";
+import '../../styles/AdminDashboard.css'
+import '../../styles/Adminlayout.css'
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -93,63 +93,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   return (
     <div className="app-container">
-      {/* Sidebar para escritorio */}
-      <aside className="sidebar">
-        <div className="sidebar-header">STEM-APP</div>
-        <nav className="sidebar-nav">
-          <ul>
-            <li>
-              <NavLink
-                to="/admin"
-                className={({ isActive }) =>
-                  isActive ? "nav-item active" : "nav-item"
-                }
-                end
-              >
-                <Home className="nav-icon" />
-                <span>Dashboard</span>
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/admin/users"
-                className={({ isActive }) =>
-                  isActive ? "nav-item active" : "nav-item"
-                }
-                end
-              >
-                <Users className="nav-icon" />
-                <span>Usuarios</span>
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/admin/courses"
-                className={({ isActive }) =>
-                  isActive ? "nav-item active" : "nav-item"
-                }
-                end
-              >
-                <BookOpen className="nav-icon" />
-                <span>Cursos</span>
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/admin/reports"
-                className={({ isActive }) =>
-                  isActive ? "nav-item active" : "nav-item"
-                }
-                end
-              >
-                <BarChart3 className="nav-icon" />
-                <span>Reportes</span>
-              </NavLink>
-            </li>
-          </ul>
-        </nav>
-      </aside>
-
       {/* Contenido principal */}
       <div className="main-content">
         {/* Header */}
@@ -157,8 +100,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           userName={userData?.full_name ?? "Usuario"}
           userRole="Administrador"
           avatarUrl={getFullImageUrl(userData?.avatar_url)}
-          onProfileClick={() => console.log("Perfil clickeado")}
-          onToggleSidebar={() => console.log("Sidebar toggled")}
         >
         </Header>
 

@@ -1,19 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import axios from "axios"
-import { UserPlus, BookOpen, Activity, BarChart3 } from "lucide-react"
-import WelcomeCard from "../../components/admin/WelcomeCard"
-import StatsCard from "../../components/admin/StatsCard"
-import config from "../../config"
-import "../../styles/AdminDashboard.css"
-
-interface StatsData {
-  users: number
-  courses: number
-  participationRate: number
-  uptime: number
-}
+import { BarChart3 } from "lucide-react"
 
 interface User {
   id: number
@@ -27,15 +15,8 @@ interface User {
 type UserStatus = "active" | "inactive"; 
 
 const AdminDashboard = () => {
-  const [stats, setStats] = useState<StatsData>({
-    users: 0,
-    courses: 0,
-    participationRate: 0,
-    uptime: 99.8,
-  })
   const [recentUsers, setRecentUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
-  const [userName, setUserName] = useState("Administrador")
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -45,20 +26,6 @@ const AdminDashboard = () => {
         if (!token) return
 
         try {
-          // Obtener datos del usuario
-          const userResponse = await axios.get(`${config.apiUrl}/users/me`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-
-          setUserName(userResponse.data.full_name.split(" ")[0])
-
-          // Obtener estadísticas del dashboard
-          const statsResponse = await axios.get(`${config.apiUrl}/dashboard/admin/stats`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-
-          setStats(statsResponse.data)
-
           // Usar datos de ejemplo para usuarios recientes mientras se soluciona el problema de serialización
           const mockRecentUsers: User[] = [
             {
@@ -91,16 +58,6 @@ const AdminDashboard = () => {
           setError(null)
         } catch (apiError: unknown) {
           console.error("Error al cargar datos del dashboard:", apiError)
-
-          // Proporcionar datos de ejemplo para que la interfaz siga funcionando
-          setUserName("Administrador")
-
-          setStats({
-            users: 1248,
-            courses: 64,
-            participationRate: 89,
-            uptime: 99.8,
-          })
 
           // Usuarios de ejemplo
           const mockRecentUsers: User[] = [
@@ -193,36 +150,7 @@ const AdminDashboard = () => {
     <div className="dashboard-content">
       {error && <div className="error-alert">{error}</div>}
 
-      <WelcomeCard
-        name={userName}
-        message="El sistema está funcionando correctamente"
-        metric={`${stats.uptime}%`}
-        metricLabel="Uptime"
-      />
-
-      <div className="stats-container">
-        <StatsCard
-          title="Usuarios"
-          value={stats.users.toString()}
-          subtitle="Usuarios activos"
-          icon={UserPlus}
-          color="#4a6cf7"
-        />
-        <StatsCard
-          title="Cursos"
-          value={stats.courses.toString()}
-          subtitle="Cursos disponibles"
-          icon={BookOpen}
-          color="#6577F3"
-        />
-        <StatsCard
-          title="Actividad"
-          value={`${stats.participationRate}%`}
-          subtitle="Tasa de participación"
-          icon={Activity}
-          color="#8088E8"
-        />
-      </div>
+      
 
       <div className="card">
         <div className="card-header">
