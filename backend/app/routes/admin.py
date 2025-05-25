@@ -57,19 +57,20 @@ async def upload_excel_data(
         )
     
     # Validar tipo de archivo
-    if not file.filename.endswith(('.xlsx', '.xls')):
+    ext = os.path.splitext(file.filename)[1].lower()
+    if ext not in ('.xlsx', '.xls'):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Solo se permiten archivos Excel (.xlsx, .xls)"
         )
-    
+
     try:
         # Crear directorio temporal si no existe
         temp_dir = "temp_uploads"
         os.makedirs(temp_dir, exist_ok=True)
         
-        # Guardar archivo temporalmente
-        temp_filename = f"{uuid4()}_{file.filename}"
+        # Guardar archivo temporalmente con nombre seguro
+        temp_filename = f"{uuid4()}{ext}"
         temp_path = os.path.join(temp_dir, temp_filename)
         
         with open(temp_path, "wb") as buffer:
