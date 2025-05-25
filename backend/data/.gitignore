@@ -1,0 +1,10 @@
+# Ignorar archivos Excel reales (datos sensibles)
+*.xlsx
+*.xls
+
+# Pero mantener el README
+!README.md
+
+# Permitir archivos de ejemplo si los hay
+!ejemplo_*.xlsx
+!sample_*.xlsx

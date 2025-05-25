@@ -3,6 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import enum
+
 Base = declarative_base()
 
 class UserRole(str, enum.Enum):
@@ -10,6 +11,90 @@ class UserRole(str, enum.Enum):
     TEACHER = "TEACHER"
     ADMIN = "ADMIN"
 
+# DEFINIR PRIMERO StudentData
+class StudentData(Base):
+    __tablename__ = "student_data"
+    
+    id = Column(String, primary_key=True, index=True)  # ID como string (ej: "T000YAHAA")
+    codigo_antiguo = Column(String)
+    periodo_catalogo = Column(String)
+    programa = Column(String)
+    snies = Column(String)
+    pensum = Column(String)
+    expedida_en = Column(String)
+    fecha_exp_doc = Column(DateTime(timezone=True))
+    sexo = Column(String)
+    estado_civil = Column(String)
+    fecha_nacimiento = Column(DateTime(timezone=True))
+    ciudad1 = Column(String)
+    direccion1 = Column(String)
+    telefono1 = Column(String)
+    ciudad2 = Column(String)
+    direccion = Column(String)
+    nivel = Column(String)
+    cod_col = Column(String)
+    colegio = Column(String)
+    dir_colegio = Column(String)
+    ciudad_colegio = Column(String)
+    depto_colegio = Column(String)
+    municipio_colegio = Column(String)
+    pais_colegio = Column(String)
+    fecha_graduacion = Column(DateTime(timezone=True))
+    
+    # Puntajes ICFES
+    ptj_fisica = Column(Float)
+    ptj_quimica = Column(Float)
+    ptj_geografia = Column(Float)
+    ptj_ciencias_sociales = Column(Float)
+    ptj_sociales_ciudadano = Column(Float)
+    ptj_ciencias_naturales = Column(Float)
+    ptj_biologia = Column(Float)
+    ptj_filosofia = Column(Float)
+    ptj_lenguaje = Column(Float)
+    ptj_lectura_critica = Column(Float)
+    ptj_ingles = Column(Float)
+    ptj_historia = Column(Float)
+    ptj_matematicas = Column(Float)
+    icfes_antes_del_2000 = Column(Boolean)
+    ecaes = Column(Float)
+    
+    # Estado académico
+    cod_estado = Column(String)
+    estado = Column(String)
+    cod_tipo = Column(String)
+    tipo_estudiante = Column(String)
+    
+    # Información académica
+    pga_acumulado = Column(Float)
+    pga_acumulado_periodo_busqueda = Column(Float)
+    creditos_matriculados = Column(Integer)
+    creditos_intentadas = Column(Integer)
+    creditos_ganadas = Column(Integer)
+    creditos_pasadas = Column(Integer)
+    creditos_pga = Column(Integer)
+    puntos_calidad_pga = Column(Float)
+    promedio_periodo = Column(Float)
+    creditos_intentadas_periodo = Column(Integer)
+    creditos_ganadas_periodo = Column(Integer)
+    creditos_pasadas_periodo = Column(Integer)
+    creditos_pga_periodo = Column(Integer)
+    puntos_calidad_pga_periodo = Column(Float)
+    nro_materias_cursadas = Column(Integer)
+    nro_materias_reprobadas = Column(Integer)
+    nro_materias_aprobadas = Column(Integer)
+    nro_materias_matriculadas = Column(Integer)
+    nro_materias_finalizadas = Column(Integer)
+    situacion = Column(String)
+    estrato = Column(Integer)
+    becas = Column(String)
+    ceres = Column(String)
+    periodo_ingreso = Column(String)
+    peri_in_prog_vigente = Column(String)
+    
+    # Relación con User
+    user = relationship("User", back_populates="student_data", uselist=False)
+
+# AHORA DEFINIR User
 class User(Base):
     __tablename__ = "users"
 
@@ -23,7 +108,7 @@ class User(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     
     # Campos adicionales para el sistema de prevención de deserción
-    student_id = Column(String, unique=True, index=True)
+    student_id = Column(String, unique=True, index=True)  # String para IDs como "T000YAHAA"
     program = Column(String)
     semester = Column(Integer)
     icfes_score = Column(Integer)
@@ -36,8 +121,16 @@ class User(Base):
     # Añadir campo de rol
     role = Column(Enum(UserRole), default=UserRole.STUDENT)
     last_login = Column(DateTime(timezone=True), nullable=True)
+    
+    # Relación con datos del estudiante del Excel
+    student_data_id = Column(String, ForeignKey("student_data.id"), nullable=True)
+    student_data = relationship("StudentData", back_populates="user")
+    
+    # Estado de validación de datos
+    data_validated = Column(Boolean, default=False)
+    validation_completed_at = Column(DateTime(timezone=True), nullable=True)
         
-    # Relaciones
+    # Relaciones existentes
     academic_records = relationship("AcademicRecord", back_populates="user")
     enrollments = relationship("Enrollment", back_populates="user")
     survey_responses = relationship("SurveyResponse", back_populates="user")

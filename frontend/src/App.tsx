@@ -7,11 +7,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocat
 import students from "./assets/students.png"
 import Register from "./components/Register"
 import Dashboard from "./pages/Dashboard"
-import Form from "./pages/Form"
 import NotFound from "./pages/NotFound"
 import axios from "axios"
 import config from "./config"
 import ProfilePage from "./pages/ProfilePage"
+import QuizInterface from "./pages/Form"
 import HelpPage from "./pages/HelpPage"
 import AdminLayout from "./components/admin/tempAdmin"
 import AdminDashboard from "./pages/admin_pages/DashboardPage"
@@ -273,9 +273,7 @@ const App: React.FC = () => {
           <Route
             path="/form"
             element={
-              <ProtectedRoute>
-                <Form />
-              </ProtectedRoute>
+                <QuizInterface />
             }
           />
           <Route

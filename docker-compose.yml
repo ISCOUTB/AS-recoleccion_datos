@@ -30,6 +30,7 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app/backend
+      - ./data/:/app/backend/data
     env_file:
       - backend/.env
     depends_on:

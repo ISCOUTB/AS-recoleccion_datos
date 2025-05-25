@@ -2,11 +2,44 @@ from enum import Enum
 from pydantic import BaseModel, EmailStr, validator, Field
 import re
 from typing import Optional, List, Dict, Any
-from datetime import datetime
+from datetime import datetime, date
+
 class UserRole(str, Enum):
     STUDENT = "STUDENT"
     TEACHER = "TEACHER"
     ADMIN = "ADMIN"
+
+# Esquemas para datos del estudiante del Excel
+class StudentDataResponse(BaseModel):
+    id: str
+    codigo_antiguo: Optional[str] = None
+    programa: Optional[str] = None
+    sexo: Optional[str] = None
+    estado_civil: Optional[str] = None
+    fecha_nacimiento: Optional[date] = None
+    estrato: Optional[int] = None
+    ptj_matematicas: Optional[float] = None
+    ptj_lectura_critica: Optional[float] = None
+    ptj_ingles: Optional[float] = None
+    pga_acumulado: Optional[float] = None
+    situacion: Optional[str] = None
+    tipo_estudiante: Optional[str] = None
+    is_validated: bool = False
+    
+    class Config:
+        from_attributes = True
+
+class StudentValidationData(BaseModel):
+    estrato: Optional[int] = None
+    fecha_nacimiento: Optional[date] = None
+    sexo: Optional[str] = None
+    estado_civil: Optional[str] = None
+    telefono1: Optional[str] = None
+    ciudad1: Optional[str] = None
+    ptj_matematicas: Optional[float] = None
+    ptj_lectura_critica: Optional[float] = None
+    ptj_ingles: Optional[float] = None
+
 # Esquema base para usuario
 class UserBase(BaseModel):
     email: EmailStr
@@ -19,20 +52,57 @@ class UserBase(BaseModel):
             raise ValueError('El correo debe ser institucional (.edu.co)')
         return v
 
-# Esquema para creación de usuario
+# Esquema para registro inicial (solo datos básicos)
+class UserRegister(BaseModel):
+    email: EmailStr
+    password: str
+    confirm_password: str
+    full_name: str
+    student_id: str  # ID que debe existir en la tabla de estudiantes
+    
+    @validator('email')
+    def email_must_be_institutional(cls, v):
+        if not v.endswith('.edu.co'):
+            raise ValueError('El correo debe ser institucional (.edu.co)')
+        return v
+    
+    @validator('password')
+    def password_strength(cls, v):
+        if len(v) < 8:
+            raise ValueError('La contraseña debe tener al menos 8 caracteres')
+        if not re.search(r'[A-Z]', v):
+            raise ValueError('La contraseña debe tener al menos una mayúscula')
+        if not re.search(r'[a-z]', v):
+            raise ValueError('La contraseña debe tener al menos una minúscula')
+        if not re.search(r'[0-9]', v):
+            raise ValueError('La contraseña debe tener al menos un número')
+        if not re.search(r'[^A-Za-z0-9]', v):
+            raise ValueError('La contraseña debe tener al menos un carácter especial')
+        return v
+    
+    @validator('confirm_password')
+    def passwords_match(cls, v, values, **kwargs):
+        if 'password' in values and v != values['password']:
+            raise ValueError('Las contraseñas no coinciden')
+        return v
+
+# Esquema para validación de datos del estudiante
+class StudentDataValidation(BaseModel):
+    validation_data: StudentValidationData
+    confirmed_fields: List[str]  # Lista de campos que el usuario confirmó como correctos
+
+# Esquema para creación de usuario (mantener compatibilidad)
 class UserCreate(UserBase):
     password: str
     confirm_password: str
     student_id: Optional[str] = None
     program: Optional[str] = None
     semester: Optional[int] = None
-    # El campo icfes_score ahora es completamente opcional y no se incluye en el formulario inicial
     icfes_score: Optional[int] = None
     role: Optional[UserRole] = None
 
     @validator('password')
     def password_strength(cls, v):
-        # Validar fortaleza de contraseña
         if len(v) < 8:
             raise ValueError('La contraseña debe tener al menos 8 caracteres')
         if not re.search(r'[A-Z]', v):
@@ -57,7 +127,7 @@ class UserCreate(UserBase):
             raise ValueError('El puntaje ICFES debe estar entre 0 y 500')
         return v
 
-# Esquema para actulización de usuario
+# Esquema para actualización de usuario
 class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     full_name: Optional[str] = None
@@ -74,6 +144,7 @@ class UserUpdate(BaseModel):
         if v is not None and (v < 0 or v > 500):
             raise ValueError('El puntaje ICFES debe estar entre 0 y 500')
         return v
+
 # Esquema para login
 class UserLogin(BaseModel):
     email: EmailStr
@@ -92,7 +163,6 @@ class PasswordChange(BaseModel):
     
     @validator('new_password')
     def password_strength(cls, v):
-        # Validar fortaleza de contraseña
         if len(v) < 8:
             raise ValueError('La contraseña debe tener al menos 8 caracteres')
         if not re.search(r'[A-Z]', v):
@@ -119,6 +189,10 @@ class UserResponse(UserBase):
     role: Optional[str] = None
     is_admin: bool
     last_login: Optional[datetime] = None
+    data_validated: bool = False
+    validation_completed_at: Optional[datetime] = None
+    student_data: Optional[StudentDataResponse] = None
+    
     class Config:
         from_attributes = True
 
@@ -127,6 +201,7 @@ class Token(BaseModel):
     access_token: str
     token_type: str
     user_role: str
+    data_validated: bool = False
 
 # Esquema para datos del token
 class TokenData(BaseModel):
@@ -134,6 +209,36 @@ class TokenData(BaseModel):
     user_id: Optional[int] = None
     role: Optional[str] = None
 
+# Esquemas para estadísticas del dashboard de admin
+class AdminDashboardStats(BaseModel):
+    total_students: int
+    active_students: int
+    validated_students: int
+    pending_validation: int
+    average_gpa: float
+    average_icfes: float
+    students_by_program: Dict[str, int]
+    students_by_situation: Dict[str, int]
+    students_by_stratum: Dict[str, int]
+    recent_registrations: int
+    dropout_risk_students: int
+
+class StudentStatsResponse(BaseModel):
+    id: int
+    full_name: str
+    student_id: str
+    program: Optional[str] = None
+    situacion: Optional[str] = None
+    pga_acumulado: Optional[float] = None
+    estrato: Optional[int] = None
+    data_validated: bool
+    created_at: datetime
+    last_login: Optional[datetime] = None
+    
+    class Config:
+        from_attributes = True
+
+# Esquemas existentes (mantener compatibilidad)
 class AcademicRecordResponse(BaseModel):
     id: int
     user_id: int
@@ -263,6 +368,7 @@ class DashboardStats(BaseModel):
     courses: int
     participationRate: float
     uptime: float
+
 class UserList(BaseModel):
     items: List[UserResponse]
     total: int

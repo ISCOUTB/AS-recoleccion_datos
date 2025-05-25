@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import "../styles/Form.css"
 
 interface QuizOption {
@@ -11,12 +12,12 @@ interface QuizQuestion {
   text: string
   options: QuizOption[]
 }
-
 export default function QuizInterface() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isCompleted, setIsCompleted] = useState(false)
   const [answers, setAnswers] = useState<Record<number, string>>({})
+  const navigate = useNavigate()
 
   const questions: QuizQuestion[] = [
     {
@@ -87,42 +88,39 @@ export default function QuizInterface() {
     setSelectedOption(optionId)
   }
 
-  const handleRestart = () => {
-    setCurrentQuestionIndex(0)
-    setSelectedOption(null)
-    setIsCompleted(false)
-    setAnswers({})
+  // Redirigir a la página de inicio
+  const handleRedirectToHome = () => {
+    navigate("/")
   }
-
   // Renderizar la pantalla de resultados si el cuestionario está completado
   if (isCompleted) {
-    return (
-      <div className="quiz-container">
-        <div className="quiz-card results-card">
-          <h2 className="quiz-title results-title">¡Gracias por completar el cuestionario!</h2>
-          <p className="results-message">Tus respuestas han sido registradas correctamente.</p>
-          <div className="results-summary">
-            {questions.map((question, index) => {
-              const answerId = answers[index]
-              const answerText = question.options.find((opt) => opt.id === answerId)?.text ?? "No respondida"
+  return (
+    <div className="quiz-container">
+      <div className="quiz-card results-card">
+        <h2 className="quiz-title results-title">¡Gracias por completar el cuestionario!</h2>
+        <p className="results-message">Tus respuestas han sido registradas correctamente.</p>
+        <div className="results-summary">
+          {questions.map((question, index) => {
+            const answerId = answers[index]
+            const answerText = question.options.find((opt) => opt.id === answerId)?.text ?? "No respondida"
 
-              return (
-                <div key={question.id} className="result-item">
-                  <p className="result-question">{question.text}</p>
-                  <p className="result-answer">
-                    Tu respuesta: <strong>{answerText}</strong>
-                  </p>
-                </div>
-              )
-            })}
-          </div>
-          <button className="nav-button next-button results-button" onClick={handleRestart}>
-            Volver a empezar
-          </button>
+            return (
+              <div key={question.id} className="result-item">
+                <p className="result-question">{question.text}</p>
+                <p className="result-answer">
+                  Tu respuesta: <strong>{answerText}</strong>
+                </p>
+              </div>
+            )
+          })}
         </div>
+        <button className="nav-button next-button results-button" onClick={handleRedirectToHome}>
+          Ir a inicio
+        </button>
       </div>
-    )
-  }
+    </div>
+  )
+}
 
   // Renderizar el cuestionario
   return (

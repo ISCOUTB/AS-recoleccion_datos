@@ -21,10 +21,11 @@ class DatabaseConnection:
             # Para desarrollo, configuración simple
             self.engine = create_engine(
                 settings.DATABASE_URL,
-                echo=True,  # Mostrar queries SQL en consola (útil para desarrollo)
+                echo=True,  
                 pool_size=5,
                 max_overflow=2,
                 pool_timeout=30,
+                pool_pre_ping=True,
                 pool_recycle=1800
             )
         else:

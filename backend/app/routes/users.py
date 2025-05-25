@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional, Dict, Any
 from datetime import timedelta, datetime
 from app.database import get_db
-from app.models.models import User, UserRole
+from app.models.models import User, UserRole, StudentData
 from app.schemas import UserCreate,UserList, UserResponse, UserLogin, Token, UserProfileUpdate, PasswordChange, UserRole as SchemaUserRole, UserUpdate
 from app.auth.password import verify_password, get_password_hash
 from app.auth.jwt import create_access_token, get_current_active_user
@@ -28,12 +28,22 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
     
     # Verificar si el ID de estudiante ya existe (si se proporciona)
     if user.student_id:
+        # VALIDACIÓN CRÍTICA: Verificar que el student_id exista en la tabla StudentData
+        student_record = db.query(StudentData).filter(StudentData.id == user.student_id).first()
+        if not student_record:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Su código de estudiante no se encuentra dentro de nuestra base de datos. Verifique o comuníquese con soporte."
+            )
+        
+        # Verificar si ya hay un usuario registrado con este student_id
         db_student = db.query(User).filter(User.student_id == user.student_id).first()
         if db_student:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="El ID de estudiante ya está registrado"
             )
+    
     # Determinar el rol del usuario
     role = UserRole.STUDENT
     if user.role:
@@ -41,6 +51,7 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
     
     # Determinar si es administrador basado en el rol
     is_admin = role == UserRole.ADMIN
+    
     # Crear nuevo usuario
     hashed_password = get_password_hash(user.password)
     db_user = User(
@@ -52,7 +63,8 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
         semester=user.semester,
         icfes_score=user.icfes_score,
         role=role,
-        is_admin=is_admin
+        is_admin=is_admin,
+        student_data_id=user.student_id if user.student_id else None  # Relacionar con StudentData
     )
     
     db.add(db_user)
@@ -317,8 +329,6 @@ async def read_users(
         "pages": (total + limit - 1) // limit if limit > 0 else 1
     }
 
-
-
 @router.put("/users/{user_id}", response_model=UserResponse)
 async def update_user(
     user_id: int,
@@ -359,6 +369,14 @@ async def update_user(
     if user_update.student_id is not None:
         # Verificar si el ID de estudiante ya existe
         if user_update.student_id != db_user.student_id:
+            # VALIDACIÓN: Verificar que el nuevo student_id exista en StudentData
+            student_record = db.query(StudentData).filter(StudentData.id == user_update.student_id).first()
+            if not student_record:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="El ID de estudiante no se encuentra en la base de datos"
+                )
+            
             existing_student_id = db.query(User).filter(User.student_id == user_update.student_id).first()
             if existing_student_id:
                 raise HTTPException(
@@ -366,6 +384,7 @@ async def update_user(
                     detail="El ID de estudiante ya está registrado por otro usuario"
                 )
         db_user.student_id = user_update.student_id
+        db_user.student_data_id = user_update.student_id  # Actualizar relación
     
     if user_update.program is not None:
         db_user.program = user_update.program
@@ -469,3 +488,42 @@ async def delete_avatar(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error al eliminar el avatar: {str(e)}"
         )
+
+# NUEVO ENDPOINT: Verificar ID de estudiante antes del registro
+@router.post("/check-student-id", status_code=status.HTTP_200_OK)
+def check_student_id(request: Dict[str, str], db: Session = Depends(get_db)):
+    """Verifica si el ID del estudiante existe en la base de datos antes del registro."""
+    student_id = request.get("student_id")
+    
+    if not student_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="ID de estudiante requerido"
+        )
+    
+    # Buscar en la tabla de datos de estudiantes
+    student_record = db.query(StudentData).filter(StudentData.id == student_id).first()
+    
+    if not student_record:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Su código de estudiante no se encuentra dentro de nuestra base de datos. Verifique o comuníquese con soporte."
+        )
+    
+    # Verificar si ya existe un usuario registrado con este ID
+    existing_user = db.query(User).filter(User.student_id == student_id).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Ya existe un usuario registrado con este ID de estudiante"
+        )
+    
+    return {
+        "message": "ID de estudiante válido",
+        "student_data": {
+            "programa": student_record.programa,
+            "estrato": student_record.estrato,
+            "sexo": student_record.sexo,
+            "estado_civil": student_record.estado_civil
+        }
+    }
