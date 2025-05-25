@@ -6,8 +6,10 @@ import axios from "axios"
 import config from "../config"
 import "../styles/DashBoard.css"
 import ProfileHeader from "../components/ProfileHeader"
+import StudentInfo from "../components/StudentInfo"
 import NotFound from "../pages/NotFound"
 import { ThemeProvider } from "../context/ThemeContext"
+
 const getFullImageUrl = (url: string) => {
   if (!url) return "/placeholder.svg?height=150&width=150"
 
@@ -22,6 +24,7 @@ const getFullImageUrl = (url: string) => {
 
   return `${config.apiUrl}${url}`
 }
+
 interface UserData {
   id: number
   email: string
@@ -29,11 +32,9 @@ interface UserData {
   student_id: string
   program: string
   semester: number
-  avatar_url?: string 
+  avatar_url?: string
   icfes_score?: number
 }
-
-
 
 function Dashboard() {
   const [userData, setUserData] = useState<UserData | null>(null)
@@ -88,7 +89,7 @@ function Dashboard() {
               path="/"
               element={
                 <div className="content-wrapper">
-                  
+                  <StudentInfo />
                 </div>
               }
             />
