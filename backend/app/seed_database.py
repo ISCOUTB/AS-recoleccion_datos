@@ -129,12 +129,9 @@ def safe_convert_value(value, target_type="string"):
         try:
             if pd.isna(value):
                 return None
-            if isinstance(value, str):
-                parsed = pd.to_datetime(value, errors='coerce')
-                return parsed.date() if not pd.isna(parsed) else None
-            else:
-                parsed = pd.to_datetime(value, errors='coerce')
-                return parsed.date() if not pd.isna(parsed) else None
+            # Unificar lógica para cualquier tipo
+            parsed = pd.to_datetime(value, errors='coerce')
+            return parsed.date() if not pd.isna(parsed) else None
         except:
             return None
     elif target_type == "bool":
