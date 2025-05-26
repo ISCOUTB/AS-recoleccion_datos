@@ -1,20 +1,11 @@
 "use client"
 
 import React, { useState, useRef, useEffect } from "react"
-import { Bell, Settings, Users, BookOpen, AlertCircle, LogOut, User, Moon, Sun, HelpCircle } from "lucide-react"
+import { Settings, LogOut, User, Moon, Sun } from "lucide-react"
 import "../../styles/ProfileHeader.css"
 import { useTheme } from "../../context/ThemeContext"
 import { useNavigate } from "react-router-dom"
 import config from "../../config"
-
-interface Notification {
-  id: number
-  type: string
-  message: string
-  time: string
-  icon: any
-  read?: boolean
-}
 
 interface HeaderProps {
   userName: string
@@ -27,55 +18,14 @@ const Header = ({ userName, userRole, avatarUrl }: HeaderProps) => {
   const [showNotifications, setShowNotifications] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
   const { darkMode, toggleDarkMode } = useTheme()
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: 1,
-      type: "success",
-      message: "Nuevo usuario registrado",
-      time: "Hace 10 minutos",
-      icon: Users,
-      read: false,
-    },
-    {
-      id: 2,
-      type: "warning",
-      message: "Curso actualizado",
-      time: "Hace 2 horas",
-      icon: BookOpen,
-      read: false,
-    },
-    {
-      id: 3,
-      type: "info",
-      message: "Alerta del sistema",
-      time: "Ayer",
-      icon: AlertCircle,
-      read: true,
-    },
-  ])
 
-  const notificationsRef = useRef<HTMLDivElement>(null)
   const settingsRef = useRef<HTMLDivElement>(null)
-  const notificationButtonRef = useRef<HTMLButtonElement>(null)
   const settingsButtonRef = useRef<HTMLButtonElement>(null)
 
-  // Obtener el conteo de notificaciones no leídas
-  const unreadCount = notifications.filter((notification) => !notification.read).length
 
   // Cerrar menús al hacer clic fuera de ellos
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      // Para notificaciones, verificar que el clic no fue en el botón ni en el menú
-      if (
-        showNotifications &&
-        notificationsRef.current &&
-        !notificationsRef.current.contains(event.target as Node) &&
-        notificationButtonRef.current &&
-        !notificationButtonRef.current.contains(event.target as Node)
-      ) {
-        setShowNotifications(false)
-      }
-
       // Para configuraciones, verificar que el clic no fue en el botón ni en el menú
       if (
         showSettings &&
@@ -94,54 +44,17 @@ const Header = ({ userName, userRole, avatarUrl }: HeaderProps) => {
     }
   }, [showNotifications, showSettings])
 
-  const toggleNotifications = (e: React.MouseEvent) => {
-    e.stopPropagation() // Detener la propagación del evento
-    setShowNotifications(!showNotifications)
-    setShowSettings(false)
-  }
-
   const toggleSettings = (e: React.MouseEvent) => {
     e.stopPropagation() // Detener la propagación del evento
     setShowSettings(!showSettings)
     setShowNotifications(false)
   }
 
-  // Función para marcar todas las notificaciones como leídas
-  const markAllAsRead = (e: React.MouseEvent) => {
-    e.stopPropagation() // Detener la propagación del evento
-    setNotifications(
-      notifications.map((notification) => ({
-        ...notification,
-        read: true,
-      })),
-    )
-  }
-
-  // Función para marcar una notificación específica como leída
-  const markAsRead = (id: number, e: React.MouseEvent) => {
-    e.stopPropagation() // Detener la propagación del evento
-    setNotifications(
-      notifications.map((notification) => (notification.id === id ? { ...notification, read: true } : notification)),
-    )
-  }
-
-  // Función para eliminar todas las notificaciones
-  const clearAllNotifications = (e: React.MouseEvent) => {
-    e.stopPropagation() // Detener la propagación del evento
-    setNotifications([])
-  }
 
   // Navegar a la página de perfil
   const goToProfile = (e: React.MouseEvent) => {
     e.stopPropagation() // Detener la propagación del evento
     navigate("/profile")
-    setShowSettings(false)
-  }
-
-  // Navegar a la página de ayuda
-  const goToHelp = (e: React.MouseEvent) => {
-    e.stopPropagation() // Detener la propagación del evento
-    navigate("/help")
     setShowSettings(false)
   }
 
@@ -187,71 +100,7 @@ const Header = ({ userName, userRole, avatarUrl }: HeaderProps) => {
         </div>
       </div>
       <div className="header-actions">
-        <div className="notification-container" ref={notificationsRef}>
-          <button
-            ref={notificationButtonRef}
-            className={`icon-button ${showNotifications ? "active" : ""}`}
-            onClick={toggleNotifications}
-            aria-label="Notificaciones"
-          >
-            <Bell size={"1.5em"} color="currentColor" />
-            {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
-          </button>
-
-          {showNotifications && (
-            <div
-              className="dropdown-menu notifications-menu"
-            >
-              <div className="dropdown-header">
-                <h3>Notificaciones</h3>
-                <button
-                  className="text-button"
-                  onClick={markAllAsRead}
-                  disabled={unreadCount === 0}
-                  style={{ opacity: unreadCount === 0 ? 0.5 : 1 }}
-                >
-                  Marcar todas como leídas
-                </button>
-              </div>
-              <div className="dropdown-content">
-                {notifications.length > 0 ? (
-                  notifications.map((notification) => (
-                    <button
-                      key={notification.id}
-                      type="button"
-                      className={`notification-item ${notification.type} ${notification.read ? "read" : ""}`}
-                      onClick={(e) => markAsRead(notification.id, e)}
-                    >
-                      <div className={`notification-icon ${notification.type}`}>
-                        {React.createElement(notification.icon, { size: 18 })}
-                      </div>
-                      <div className="notification-content">
-                        <p>{notification.message}</p>
-                        <span className="notification-time">{notification.time}</span>
-                      </div>
-                    </button>
-                  ))
-                ) : (
-                  <div className="empty-notifications">
-                    <p>No tienes notificaciones</p>
-                  </div>
-                )}
-              </div>
-              <div className="dropdown-footer">
-                {notifications.length > 0 ? (
-                  <div className="footer-actions">
-                    <button className="text-button">Ver todas</button>
-                    <button className="text-button text-danger" onClick={clearAllNotifications}>
-                      Borrar todas
-                    </button>
-                  </div>
-                ) : (
-                  <button className="text-button">Ver historial</button>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
+       
 
         <div className="settings-container" ref={settingsRef}>
           <button
@@ -276,10 +125,6 @@ const Header = ({ userName, userRole, avatarUrl }: HeaderProps) => {
                 <button className="menu-item" onClick={toggleDarkMode}>
                   {darkMode ? <Sun size={18} /> : <Moon size={18} />}
                   <span>{darkMode ? "Modo claro" : "Modo oscuro"}</span>
-                </button>
-                <button className="menu-item" onClick={goToHelp}>
-                  <HelpCircle size={18} />
-                  <span>Ayuda</span>
                 </button>
                 <div className="menu-divider"></div>
                 <button className="menu-item logout" onClick={handleLogout}>
