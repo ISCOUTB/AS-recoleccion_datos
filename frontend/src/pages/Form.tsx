@@ -178,16 +178,16 @@ export default function QuizInterface() {
 
         // GUARDAR RESPUESTAS DEL FORMULARIO DE MANERA MÁS SIMPLE
         const formData = {
-          estadoAcademico: allAnswers[0]?.value || "",
-          fechaIngreso: allAnswers[1]?.value || "",
-          promedio: allAnswers[2]?.value || "",
-          puntajeICFES: allAnswers[3]?.value || "",
-          creditos: allAnswers[4]?.value || "",
-          sisben: allAnswers[5]?.value || "",
-          estrato: allAnswers[6]?.value || "",
-          beca: allAnswers[7]?.value || "",
-          anoGraduacion: allAnswers[8]?.value || "",
-          telefono: allAnswers[9]?.value || "",
+          estadoAcademico: allAnswers[0]?.value ?? "",
+          fechaIngreso: allAnswers[1]?.value ?? "",
+          promedio: allAnswers[2]?.value ?? "",
+          puntajeICFES: allAnswers[3]?.value ?? "",
+          creditos: allAnswers[4]?.value ?? "",
+          sisben: allAnswers[5]?.value ?? "",
+          estrato: allAnswers[6]?.value ?? "",
+          beca: allAnswers[7]?.value ?? "",
+          anoGraduacion: allAnswers[8]?.value ?? "",
+          telefono: allAnswers[9]?.value ?? "",
         }
 
         localStorage.setItem("formData", JSON.stringify(formData))
