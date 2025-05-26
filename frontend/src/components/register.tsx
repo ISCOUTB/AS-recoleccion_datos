@@ -156,17 +156,33 @@ const Register: React.FC = () => {
         localStorage.setItem("token", response.data.access_token)
       }
 
-      // GUARDAR DATOS DEL REGISTRO PARA EL DASHBOARD
+      // GUARDAR DATOS DEL REGISTRO PARA EL DASHBOARD - SISTEMA MEJORADO
       const registrationData = {
+        id: Date.now(), // ID único basado en timestamp
         full_name: formData.full_name,
         email: formData.email,
         student_id: formData.student_id,
         program: formData.program,
         semester: formData.semester,
+        registrationDate: new Date().toISOString(),
+        formCompleted: false, // Indica si completó el formulario académico
       }
 
+      // Obtener lista existente de estudiantes o crear nueva
+      const existingStudents = JSON.parse(localStorage.getItem("allStudents") ?? "[]")
+
+      // Agregar nuevo estudiante a la lista
+      existingStudents.push(registrationData)
+
+      // Guardar lista actualizada
+      localStorage.setItem("allStudents", JSON.stringify(existingStudents))
+
+      // Guardar también el estudiante actual para el flujo normal
+      localStorage.setItem("currentStudent", JSON.stringify(registrationData))
       localStorage.setItem("registrationData", JSON.stringify(registrationData))
-      console.log("DATOS DE REGISTRO GUARDADOS:", registrationData)
+
+      console.log("NUEVO ESTUDIANTE AGREGADO A LA LISTA:", registrationData)
+      console.log("TOTAL ESTUDIANTES:", existingStudents.length)
 
       setSuccess(true)
     } catch (err: any) {

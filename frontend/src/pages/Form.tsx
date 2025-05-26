@@ -176,23 +176,49 @@ export default function QuizInterface() {
           [currentQuestionIndex]: answerData,
         }
 
-        // GUARDAR RESPUESTAS DEL FORMULARIO DE MANERA MÁS SIMPLE
+        // GUARDAR RESPUESTAS DEL FORMULARIO DE MANERA MEJORADA
         const formData = {
-          estadoAcademico: allAnswers[0]?.value ?? "",
-          fechaIngreso: allAnswers[1]?.value ?? "",
-          promedio: allAnswers[2]?.value ?? "",
-          puntajeICFES: allAnswers[3]?.value ?? "",
-          creditos: allAnswers[4]?.value ?? "",
-          sisben: allAnswers[5]?.value ?? "",
-          estrato: allAnswers[6]?.value ?? "",
-          beca: allAnswers[7]?.value ?? "",
-          anoGraduacion: allAnswers[8]?.value ?? "",
-          telefono: allAnswers[9]?.value ?? "",
+          estadoAcademico: allAnswers[0]?.value || "",
+          fechaIngreso: allAnswers[1]?.value || "",
+          promedio: allAnswers[2]?.value || "",
+          puntajeICFES: allAnswers[3]?.value || "",
+          creditos: allAnswers[4]?.value || "",
+          sisben: allAnswers[5]?.value || "",
+          estrato: allAnswers[6]?.value || "",
+          beca: allAnswers[7]?.value || "",
+          anoGraduacion: allAnswers[8]?.value || "",
+          telefono: allAnswers[9]?.value || "",
+          completedAt: new Date().toISOString(),
         }
 
+        // Obtener datos del estudiante actual
+        const currentStudent = JSON.parse(localStorage.getItem("currentStudent") ?? "{}")
+
+        // Obtener lista de todos los estudiantes
+        const allStudents = JSON.parse(localStorage.getItem("allStudents") ?? "[]")
+
+        // Encontrar y actualizar el estudiante actual en la lista
+        const updatedStudents = allStudents.map((student: any) => {
+          if (student.id === currentStudent.id) {
+            return {
+              ...student,
+              formData: formData,
+              formCompleted: true,
+              formCompletedAt: new Date().toISOString(),
+            }
+          }
+          return student
+        })
+
+        // Guardar lista actualizada
+        localStorage.setItem("allStudents", JSON.stringify(updatedStudents))
+
+        // Mantener compatibilidad con el sistema actual
         localStorage.setItem("formData", JSON.stringify(formData))
         localStorage.setItem("formCompleted", "true")
-        console.log("✅ DATOS DEL FORMULARIO GUARDADOS:", formData)
+
+        console.log("✅ FORMULARIO COMPLETADO PARA ESTUDIANTE:", currentStudent.student_id)
+        console.log("✅ LISTA DE ESTUDIANTES ACTUALIZADA:", updatedStudents)
         setIsCompleted(true)
       } else {
         setCurrentQuestionIndex(currentQuestionIndex + 1)
