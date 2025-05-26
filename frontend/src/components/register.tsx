@@ -1,8 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import "../App.css"
@@ -36,14 +35,16 @@ const Register: React.FC = () => {
   const [success, setSuccess] = useState(false)
   const [studentIdValidated, setStudentIdValidated] = useState(false)
   const [validatingStudentId, setValidatingStudentId] = useState(false)
+  const validationStudent = studentIdValidated ? "input-success" : ""
+  const IdValidation = studentIdValidated ? "✓ Válido" : "Validar"
 
   const navigate = useNavigate()
+
   useEffect(() => {
     if (success) {
       const timer = setTimeout(() => {
         navigate("/form")
       }, 2000)
-
       return () => clearTimeout(timer)
     }
   }, [success, navigate])
@@ -84,7 +85,7 @@ const Register: React.FC = () => {
       if (response.data.student_data) {
         setFormData((prev) => ({
           ...prev,
-          program: response.data.student_data.programa || prev.program,
+          program: response.data.student_data.programa ?? prev.program,
         }))
       }
     } catch (err: any) {
@@ -150,11 +151,24 @@ const Register: React.FC = () => {
       console.log("Enviando datos al backend:", dataToSend)
 
       const response = await axios.post(`${config.apiUrl}/users/register`, dataToSend)
-      if (response.data && response.data.access_token) {
+
+      if (response.data?.access_token) {
         localStorage.setItem("token", response.data.access_token)
       }
-      navigate("/form")
 
+      // GUARDAR DATOS DEL REGISTRO PARA EL DASHBOARD
+      const registrationData = {
+        full_name: formData.full_name,
+        email: formData.email,
+        student_id: formData.student_id,
+        program: formData.program,
+        semester: formData.semester,
+      }
+
+      localStorage.setItem("registrationData", JSON.stringify(registrationData))
+      console.log("DATOS DE REGISTRO GUARDADOS:", registrationData)
+
+      setSuccess(true)
     } catch (err: any) {
       console.error("Error en el registro:", err)
 
@@ -204,7 +218,6 @@ const Register: React.FC = () => {
       </div>
       <div className="right-section">
         <div className="form-container">
-          {/* Logo visible en móviles */}
           <div className="mobile-logo">
             <h1>EarlySTEM</h1>
             <h2>Únete a nuestra comunidad académica</h2>
@@ -215,7 +228,6 @@ const Register: React.FC = () => {
           {errors.general && <div className="error-message">{errors.general}</div>}
 
           <form onSubmit={handleSubmit} className="form">
-            {/* Nombre completo */}
             <div className="form-group">
               <label htmlFor="full_name" className="label">
                 Nombre Completo*
@@ -233,7 +245,6 @@ const Register: React.FC = () => {
               {errors.full_name && <div className="error-text">{errors.full_name}</div>}
             </div>
 
-            {/* Correo institucional */}
             <div className="form-group">
               <label htmlFor="email" className="label">
                 Correo Institucional*
@@ -251,7 +262,6 @@ const Register: React.FC = () => {
               {errors.email && <div className="error-text">{errors.email}</div>}
             </div>
 
-            {/* ID de estudiante con validación */}
             <div className="form-group">
               <label htmlFor="student_id" className="label">
                 ID de estudiante*
@@ -265,7 +275,7 @@ const Register: React.FC = () => {
                   value={formData.student_id}
                   onChange={handleChange}
                   required
-                  className={`input ${errors.student_id ? "input-error" : studentIdValidated ? "input-success" : ""}`}
+                  className={`input ${errors.student_id ? "input-error" : validationStudent}`}
                 />
                 <button
                   type="button"
@@ -273,14 +283,13 @@ const Register: React.FC = () => {
                   disabled={validatingStudentId || !formData.student_id.trim()}
                   className={`validate-button ${studentIdValidated ? "validated" : ""}`}
                 >
-                  {validatingStudentId ? "Validando..." : studentIdValidated ? "✓ Válido" : "Validar"}
+                  {validatingStudentId ? "Validando..." : IdValidation}
                 </button>
               </div>
               {errors.student_id && <div className="error-text">{errors.student_id}</div>}
               {studentIdValidated && <div className="success-text">ID de estudiante válido</div>}
             </div>
 
-            {/* Contraseña */}
             <div className="form-row">
               <div className="form-group half">
                 <label htmlFor="password" className="label">
@@ -316,7 +325,6 @@ const Register: React.FC = () => {
               </div>
             </div>
 
-            {/* Programa y Semestre */}
             <div className="form-row">
               <div className="form-group half">
                 <label htmlFor="program" className="label">
@@ -333,26 +341,8 @@ const Register: React.FC = () => {
                 />
                 {errors.program && <div className="error-text">{errors.program}</div>}
               </div>
-              <div className="form-group half">
-                <label htmlFor="semester" className="label">
-                  Semestre
-                </label>
-                <input
-                  id="semester"
-                  name="semester"
-                  type="number"
-                  placeholder="Semestre"
-                  value={formData.semester}
-                  onChange={handleChange}
-                  min="1"
-                  max="12"
-                  className={`input ${errors.semester ? "input-error" : ""}`}
-                />
-                {errors.semester && <div className="error-text">{errors.semester}</div>}
-              </div>
             </div>
 
-            {/* Botón de registro */}
             <button type="submit" className="button" disabled={loading || !studentIdValidated}>
               {loading ? "Procesando..." : "Registrarse"}
             </button>

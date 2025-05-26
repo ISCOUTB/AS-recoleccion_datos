@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { Routes, Route, useNavigate } from "react-router-dom"
-import axios from "axios"
 import config from "../config"
 import "../styles/DashBoard.css"
 import ProfileHeader from "../components/ProfileHeader"
@@ -45,20 +44,26 @@ function Dashboard() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const token = localStorage.getItem("token")
-        if (!token) {
-          navigate("/")
-          return
+        // USAR SOLO DATOS LOCALES DEL REGISTRO
+        const registrationDataString = localStorage.getItem("registrationData")
+        if (registrationDataString) {
+          const registrationData = JSON.parse(registrationDataString)
+          setUserData({
+            id: 1,
+            email: registrationData.email,
+            full_name: registrationData.full_name,
+            student_id: registrationData.student_id,
+            program: registrationData.program,
+            semester: Number.parseInt(registrationData.semester) || 1,
+            avatar_url: "/placeholder.svg?height=150&width=150",
+          })
+          console.log("DATOS DEL USUARIO CARGADOS:", registrationData)
+        } else {
+          setError("No hay datos de registro. Por favor regístrate primero.")
         }
-
-        // Obtener datos del usuario
-        const userResponse = await axios.get(`${config.apiUrl}/users/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        setUserData(userResponse.data)
       } catch (err) {
         console.error("Error al cargar datos:", err)
-        setError("No se pudieron cargar los datos. Por favor, intenta nuevamente.")
+        setError("Error al cargar los datos.")
       } finally {
         setLoading(false)
       }

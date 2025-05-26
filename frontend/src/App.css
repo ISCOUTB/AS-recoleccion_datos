@@ -260,7 +260,7 @@ body {
   border-radius: 0.375rem;
   font-size: 1rem;
   transition: border-color 0.2s, box-shadow 0.2s;
-  color: #000000 !important; 
+  color: var(--text) !important; 
 }
 /* Ajustes específicos para login */
 .login-form .input {

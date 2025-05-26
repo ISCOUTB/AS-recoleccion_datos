@@ -1,191 +1,209 @@
-import type React from "react"
-import "../styles/StudentInfo.css" 
+"use client"
 
-interface StudentData {
-  name: string
-  studentId: string
-  program: string
-  semester: number
-  sisben: string
-  stratum: number
-  weightedAverage: number
-  icfesScore: number
-  enrollmentDate: string
-  academicStatus: string
-  credits: {
-    completed: number
-    total: number
-  }
-  contact: {
-    email: string
-    phone: string
-  }
-}
+import type React from "react"
+import { useState, useEffect } from "react"
 
 const StudentInfo: React.FC = () => {
-  // Datos estáticos del estudiante
-  const studentData: StudentData = {
-    name: "Ana María García",
-    studentId: "2021234567",
-    program: "Ingeniería de Sistemas",
-    semester: 6,
-    sisben: "C1",
-    stratum: 3,
-    weightedAverage: 4.2,
-    icfesScore: 385,
-    enrollmentDate: "2021-02-15",
-    academicStatus: "Activo",
-    credits: {
-      completed: 120,
-      total: 160,
-    },
-    contact: {
-      email: "ana.garcia@universidad.edu.co",
-      phone: "+57 300 123 4567",
-    },
-  }
+  const [registrationData, setRegistrationData] = useState<any>(null)
+  const [formAnswers, setFormAnswers] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "activo":
-        return "status-active"
-      case "inactivo":
-        return "status-inactive"
-      case "graduado":
-        return "status-graduated"
-      default:
-        return "status-pending"
+  useEffect(() => {
+    const loadData = () => {
+      try {
+        // CARGAR DATOS DEL REGISTRO
+        const regDataString = localStorage.getItem("registrationData")
+        if (regDataString) {
+          const regData = JSON.parse(regDataString)
+          setRegistrationData(regData)
+          console.log("✅ DATOS DE REGISTRO CARGADOS:", regData)
+        }
+
+        // CARGAR DATOS DEL FORMULARIO
+        const formDataString = localStorage.getItem("formData")
+        if (formDataString) {
+          const formData = JSON.parse(formDataString)
+          setFormAnswers(formData)
+          console.log("✅ DATOS DEL FORMULARIO CARGADOS:", formData)
+        }
+      } catch (error) {
+        console.error("Error al cargar datos:", error)
+      } finally {
+        setLoading(false)
+      }
     }
+
+    loadData()
+  }, [])
+
+  if (loading) {
+    return <div className="loading-container">Cargando información del estudiante...</div>
   }
 
-  const getAverageColor = (average: number) => {
-    if (average >= 4.0) return "average-excellent"
-    if (average >= 3.5) return "average-good"
-    if (average >= 3.0) return "average-regular"
-    return "average-low"
+  if (!registrationData) {
+    return (
+      <div className="no-data-message">
+        <h2>No hay información de registro</h2>
+        <p>Por favor, completa el registro primero.</p>
+        <button className="nav-button next-button" onClick={() => (window.location.href = "/register")}>
+          Ir al Registro
+        </button>
+      </div>
+    )
+  }
+
+  const isFormCompleted = localStorage.getItem("formCompleted") === "true"
+
+  // MAPEAR RESPUESTAS DEL FORMULARIO POR ÍNDICE
+  const getFormValue = (field: string) => {
+    if (!formAnswers) return "No completado"
+    return formAnswers[field] ?? "No completado"
+  }
+
+  const formatDate = (dateString: string) => {
+    if (dateString === "Pendiente completar formulario" || !dateString) {
+      return dateString
+    }
+    try {
+      return new Date(dateString).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    } catch {
+      return dateString
+    }
   }
 
   return (
     <div className="student-info-container">
-      <div className="info-grid">
-        {/* Información Personal */}
-        <div className="info-card personal-info">
-          <div className="card-header">
-            <h3>Información Personal</h3>
-            <div className="header-accent"></div>
-          </div>
+      {/* Banner de bienvenida */}
+      <div className="welcome-banner">
+        <div className="welcome-text">
+          <h1 className="welcome-title">¡Bienvenido, {registrationData.full_name.split(" ")[0]}!</h1>
+          <p className="welcome-subtitle">Dashboard Académico - {registrationData.program}</p>
+        </div>
+        <div className="grade-card">
+          <div className="grade-label">Promedio</div>
+          <div className="grade-value">{getFormValue("promedio")}</div>
+        </div>
+      </div>
+
+      {/* Alerta si no ha completado el formulario */}
+      {!isFormCompleted && (
+        <div className="alert-banner">
+          <h3>⚠️ Completa tu perfil académico</h3>
+          <p>Para acceder a todas las funcionalidades, completa el formulario académico.</p>
+          <button className="nav-button next-button" onClick={() => (window.location.href = "/form")}>
+            Completar Formulario
+          </button>
+        </div>
+      )}
+
+      {/* Información académica */}
+      <div className="academic-info">
+        <div className="info-card">
+          <div className="card-icon career-icon">🎓</div>
           <div className="card-content">
-            <div className="info-row">
-              <span className="label">Nombre Completo:</span>
-              <span className="value">{studentData.name}</span>
-            </div>
-            <div className="info-row">
-              <span className="label">Código Estudiantil:</span>
-              <span className="value code">{studentData.studentId}</span>
-            </div>
-            <div className="info-row">
-              <span className="label">Email Institucional:</span>
-              <span className="value email">{studentData.contact.email}</span>
-            </div>
-            <div className="info-row">
-              <span className="label">Teléfono:</span>
-              <span className="value">{studentData.contact.phone}</span>
+            <div className="card-title">Programa Académico</div>
+            <div className="card-value">{registrationData.program}</div>
+            <div className="card-subtitle">
+              Semestre {registrationData.semester} • {getFormValue("estadoAcademico")}
             </div>
           </div>
         </div>
 
-        {/* Información Académica */}
-        <div className="info-card academic-info">
-          <div className="card-header">
-            <h3>Información Académica</h3>
-            <div className="header-accent"></div>
-          </div>
+        <div className="info-card">
+          <div className="card-icon credits-icon">📚</div>
           <div className="card-content">
-            <div className="info-row">
-              <span className="label">Programa:</span>
-              <span className="value">{studentData.program}</span>
+            <div className="card-title">Progreso Académico</div>
+            <div className="card-value">{getFormValue("creditos")} créditos</div>
+            <div className="card-subtitle">ICFES: {getFormValue("puntajeICFES")} puntos</div>
+          </div>
+        </div>
+
+        <div className="info-card">
+          <div className="card-icon period-icon">📅</div>
+          <div className="card-content">
+            <div className="card-title">Fecha de Ingreso</div>
+            <div className="card-value">{formatDate(getFormValue("fechaIngreso"))}</div>
+            <div className="card-subtitle">Graduado en {getFormValue("anoGraduacion")}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Información detallada */}
+      <div className="student-details">
+        <div className="details-section">
+          <h3>Información Personal y Contacto</h3>
+          <div className="details-grid">
+            <div className="detail-item">
+              <span className="detail-label">Nombre Completo:</span>
+              <span className="detail-value">{registrationData.full_name}</span>
             </div>
-            <div className="info-row">
-              <span className="label">Semestre Actual:</span>
-              <span className="value semester">{studentData.semester}°</span>
+            <div className="detail-item">
+              <span className="detail-label">Código Estudiantil:</span>
+              <span className="detail-value">{registrationData.student_id}</span>
             </div>
-            <div className="info-row">
-              <span className="label">Estado Académico:</span>
-              <span className={`value status ${getStatusColor(studentData.academicStatus)}`}>
-                {studentData.academicStatus}
-              </span>
+            <div className="detail-item">
+              <span className="detail-label">Email Institucional:</span>
+              <span className="detail-value">{registrationData.email}</span>
             </div>
-            <div className="info-row">
-              <span className="label">Fecha de Ingreso:</span>
-              <span className="value">{new Date(studentData.enrollmentDate).toLocaleDateString("es-CO")}</span>
+            <div className="detail-item">
+              <span className="detail-label">Teléfono:</span>
+              <span className="detail-value">{getFormValue("telefono")}</span>
             </div>
           </div>
         </div>
 
-        {/* Rendimiento Académico */}
-        <div className="info-card performance-info">
-          <div className="card-header">
-            <h3>Rendimiento Académico</h3>
-            <div className="header-accent"></div>
-          </div>
-          <div className="card-content">
-            <div className="info-row">
-              <span className="label">Promedio Ponderado:</span>
-              <span className={`value average ${getAverageColor(studentData.weightedAverage)}`}>
-                {studentData.weightedAverage.toFixed(2)}
-              </span>
+        <div className="details-section">
+          <h3>Información Socioeconómica</h3>
+          <div className="details-grid">
+            <div className="detail-item">
+              <span className="detail-label">Clasificación SISBEN:</span>
+              <span className="detail-value">{getFormValue("sisben")}</span>
             </div>
-            <div className="info-row">
-              <span className="label">Puntaje ICFES:</span>
-              <span className="value icfes">{studentData.icfesScore}</span>
+            <div className="detail-item">
+              <span className="detail-label">Estrato Socioeconómico:</span>
+              <span className="detail-value">{getFormValue("estrato")}</span>
             </div>
-            <div className="info-row">
-              <span className="label">Créditos Completados:</span>
-              <span className="value">
-                {studentData.credits.completed} / {studentData.credits.total}
-              </span>
-            </div>
-            <div className="progress-container">
-              <div className="progress-label">Progreso del Programa</div>
-              <div className="progress-bar">
-                <div
-                  className="progress-fill"
-                  style={{ width: `${(studentData.credits.completed / studentData.credits.total) * 100}%` }}
-                ></div>
-              </div>
-              <div className="progress-text">
-                {Math.round((studentData.credits.completed / studentData.credits.total) * 100)}%
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Información Socioeconómica */}
-        <div className="info-card socioeconomic-info">
-          <div className="card-header">
-            <h3>Información Socioeconómica</h3>
-            <div className="header-accent"></div>
-          </div>
-          <div className="card-content">
-            <div className="info-row">
-              <span className="label">Clasificación SISBEN:</span>
-              <span className="value sisben">{studentData.sisben}</span>
-            </div>
-            <div className="info-row">
-              <span className="label">Estrato Socioeconómico:</span>
-              <span className="value stratum">Estrato {studentData.stratum}</span>
-            </div>
-            <div className="benefits-section">
-              <div className="benefits-title">Beneficios Aplicables:</div>
-              <div className="benefits-list">
-                <span className="benefit-tag">Descuento Matrícula</span>
-                <span className="benefit-tag">Apoyo Alimentario</span>
-                <span className="benefit-tag">Transporte Subsidiado</span>
-              </div>
+            <div className="detail-item">
+              <span className="detail-label">Apoyo Económico:</span>
+              <span className="detail-value">{getFormValue("beca")}</span>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Resumen académico */}
+      {isFormCompleted && (
+        <div className="academic-summary">
+          <h3>Resumen Académico</h3>
+          <div className="summary-cards">
+            <div className="summary-card">
+              <div className="summary-icon">📊</div>
+              <div className="summary-content">
+                <div className="summary-title">Promedio Ponderado</div>
+                <div className="summary-value">{getFormValue("promedio")}/5.0</div>
+              </div>
+            </div>
+            <div className="summary-card">
+              <div className="summary-icon">📝</div>
+              <div className="summary-content">
+                <div className="summary-title">Puntaje ICFES</div>
+                <div className="summary-value">{getFormValue("puntajeICFES")}</div>
+              </div>
+            </div>
+            <div className="summary-card">
+              <div className="summary-icon">🎯</div>
+              <div className="summary-content">
+                <div className="summary-title">Créditos Completados</div>
+                <div className="summary-value">{getFormValue("creditos")}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
