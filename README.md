@@ -27,21 +27,31 @@ El sistema utiliza tecnologías modernas y robustas:
 
 ### Frontend
 
-- **React**: Biblioteca para construir interfaces de usuario interactivas
-- **Vite.js**: Herramienta de construcción que proporciona un entorno de desarrollo más rápido
+**React**: Biblioteca de interfaz de usuario para crear interfaces basadas en componentes
+**React DOM**: Representación de React para navegadores web
+**React Router**: Enrutamiento y navegación del lado del cliente
+**Axios**: Cliente HTTP para comunicación API
+**Vite**: Herramienta de creación de frontend y servidor de desarrollo
+**TypeScript**: Tipado estático para JavaScript
+**ESLint**: Linting de código y aplicación de estilos
+**SWC**: Compilador rápido de JavaScript/TypeScript (mediante el complemento Vite)
+
+Traducción realizada con la versión gratuita del traductor DeepL.com
 
 
 ### Backend
 
-- **FastAPI**: High-performance web framework for building APIs
-- **Pydantic**:	Data validation and settings management
-- **SQLAlchemy**:	SQL toolkit and Object-Relational Mapping (ORM)
-- **Alembic**:	Database migration tool
-- **Python-JOSE**: JavaScript Object Signing and Encryption implementation
-- **BCrypt**:	Password hashing library
-- **Uvicorn**: ASGI server for running FastAPI applications
-- **Python-multipart**:	Multipart form data parsing
-- **Python-dotenv**: Environment variable management
+- **FastAPI**: Framework web de alto rendimiento para la creación de APIs
+- **Pydantic**:	Validación de datos y gestión de configuraciones
+- **SQLAlchemy**:	Conjunto de herramientas SQL y Object-Relational Mapping (ORM)
+- **Alembic**:	Herramienta de migración de bases de datos
+- **Python-JOSE**: Implementación de firma y cifrado de objetos en JavaScript
+- **BCrypt**:	Biblioteca de hashing de contraseñas
+- **Uvicorn**: Servidor ASGI para ejecutar aplicaciones FastAPI
+- **Python-multipart**:	Análisis de datos de formularios multiparte
+- **Python-dotenv**: Gestión de variables de entorno
+
+Traducción realizada con la versión gratuita del traductor DeepL.com
 
 ## ✨ Características Principales
 
