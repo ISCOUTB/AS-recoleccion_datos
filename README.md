@@ -27,17 +27,14 @@ El sistema utiliza tecnologías modernas y robustas:
 
 ### Frontend
 
-**React**: Biblioteca de interfaz de usuario para crear interfaces basadas en componentes
-**React DOM**: Representación de React para navegadores web
-**React Router**: Enrutamiento y navegación del lado del cliente
-**Axios**: Cliente HTTP para comunicación API
-**Vite**: Herramienta de creación de frontend y servidor de desarrollo
-**TypeScript**: Tipado estático para JavaScript
-**ESLint**: Linting de código y aplicación de estilos
-**SWC**: Compilador rápido de JavaScript/TypeScript (mediante el complemento Vite)
-
-Traducción realizada con la versión gratuita del traductor DeepL.com
-
+- **React**: Biblioteca de interfaz de usuario para crear interfaces basadas en componentes
+- **React DOM**: Representación de React para navegadores web
+- **React Router**: Enrutamiento y navegación del lado del cliente
+- **Axios**: Cliente HTTP para comunicación API
+- **Vite**: Herramienta de creación de frontend y servidor de desarrollo
+- **TypeScript**: Tipado estático para JavaScript
+- **ESLint**: Linting de código y aplicación de estilos
+- **SWC**: Compilador rápido de JavaScript/TypeScript (mediante el complemento Vite)
 
 ### Backend
 
