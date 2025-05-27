@@ -11,7 +11,7 @@
 
 ## 🚀 Acerca del Proyecto
 
-El **Sistema de Prevención de Deserción Estudiantil** es una plataforma innovadora diseñada para identificar tempranamente estudiantes en riesgo de deserción académica. Utilizando técnicas avanzadas de machine learning y análisis de datos, el sistema procesa información académica, socioeconómica y comportamental para generar alertas tempranas y recomendaciones personalizadas.
+El **Sistema de Prevención de Deserción Estudiantil** es una plataforma innovadora diseñada para identificar tempranamente estudiantes en riesgo de deserción académica. El sistema busca procesar información académica, socioeconómica y comportamental para generar alertas tempranas y recomendaciones personalizadas.
 
 ### 🎯 Objetivos
 
@@ -20,20 +20,6 @@ El **Sistema de Prevención de Deserción Estudiantil** es una plataforma innova
 - **Facilitar la intervención oportuna** de profesores y administrativos
 - **Mejorar la toma de decisiones** a nivel institucional mediante análisis de datos
 - **Crear un ecosistema de apoyo** para estudiantes en situaciones vulnerables
-
-
-## 🏗️ Arquitectura
-
-El sistema implementa una arquitectura de microservicios distribuida en capas:
-
-### Capas Principales
-
-- **Capa de Presentación**: Interfaces específicas para estudiantes, profesores y administrativos
-- **Capa de Seguridad**: Autenticación, autorización y cifrado de datos
-- **Capa de Aplicación**: Servicios independientes para diferentes funcionalidades
-- **Capa de Análisis**: Algoritmos de ML para detección de riesgo y recomendaciones
-- **Capa de Datos**: Bases de datos especializadas
-
 
 ## 💻 Stack Tecnológico
 
@@ -47,23 +33,27 @@ El sistema utiliza tecnologías modernas y robustas:
 
 ### Backend
 
-- **Python (FastAPI)**: Framework moderno para APIs con alto rendimiento
-- **PostgreSQL**: Sistema de gestión de bases de datos relacional
-- **Supabase**: Plataforma de backend como servicio (BaaS) con autenticación y almacenamiento
+- **FastAPI**: High-performance web framework for building APIs
+- **Pydantic**:	Data validation and settings management
+- **SQLAlchemy**:	SQL toolkit and Object-Relational Mapping (ORM)
+- **Alembic**:	Database migration tool
+- **Python-JOSE**: JavaScript Object Signing and Encryption implementation
+- **BCrypt**:	Password hashing library
+- **Uvicorn**: ASGI server for running FastAPI applications
+- **Python-multipart**:	Multipart form data parsing
+- **Python-dotenv**: Environment variable management
 
 ## ✨ Características Principales
 
 ### Para Estudiantes
 
 - **Perfil Académico Completo**: Visualización de historial académico y progreso
-- **Recomendaciones Personalizadas**: Sugerencias de carreras basadas en perfil ICFES
 - **Recursos de Apoyo**: Acceso a materiales y servicios de ayuda
 
 
 ### Para Profesores
 
 - **Monitoreo de Estudiantes**: Seguimiento del desempeño de estudiantes asignados
-- **Alertas de Riesgo**: Notificaciones sobre estudiantes que requieren atención
 - **Herramientas de Reporte**: Funcionalidades para reportar casos especiales
 
 
@@ -71,7 +61,6 @@ El sistema utiliza tecnologías modernas y robustas:
 
 - **Dashboards Institucionales**: Visualización de métricas y tendencias
 - **Gestión de Casos**: Seguimiento de intervenciones y resultados
-- **Análisis Predictivo**: Proyecciones y escenarios para planificación
 
 
 ## 📊 Diagramas
