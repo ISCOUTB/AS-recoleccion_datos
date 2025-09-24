@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel, EmailStr, validator, Field
+from pydantic import BaseModel, EmailStr, field_validator, Field, ConfigDict
 import re
 from typing import Optional, List, Dict, Any
 from datetime import datetime, date
@@ -26,8 +26,7 @@ class StudentDataResponse(BaseModel):
     tipo_estudiante: Optional[str] = None
     is_validated: bool = False
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class StudentValidationData(BaseModel):
     estrato: Optional[int] = None
@@ -45,9 +44,8 @@ class UserBase(BaseModel):
     email: EmailStr
     full_name: Optional[str] = None
     
-    @validator('email')
+    @field_validator('email')
     def email_must_be_institutional(cls, v):
-        # Validar que el correo sea institucional (ejemplo)
         if not v.endswith('.edu.co'):
             raise ValueError('El correo debe ser institucional (.edu.co)')
         return v
@@ -60,13 +58,13 @@ class UserRegister(BaseModel):
     full_name: str
     student_id: str  # ID que debe existir en la tabla de estudiantes
     
-    @validator('email')
+    @field_validator('email')
     def email_must_be_institutional(cls, v):
         if not v.endswith('.edu.co'):
             raise ValueError('El correo debe ser institucional (.edu.co)')
         return v
-    
-    @validator('password')
+
+    @field_validator('password')
     def password_strength(cls, v):
         if len(v) < 8:
             raise ValueError('La contraseña debe tener al menos 8 caracteres')
@@ -79,9 +77,9 @@ class UserRegister(BaseModel):
         if not re.search(r'[^A-Za-z0-9]', v):
             raise ValueError('La contraseña debe tener al menos un carácter especial')
         return v
-    
-    @validator('confirm_password')
-    def passwords_match(cls, v, values, **kwargs):
+
+    @field_validator('confirm_password')
+    def passwords_match(cls, v, values):
         if 'password' in values and v != values['password']:
             raise ValueError('Las contraseñas no coinciden')
         return v
@@ -101,7 +99,7 @@ class UserCreate(UserBase):
     icfes_score: Optional[int] = None
     role: Optional[UserRole] = None
 
-    @validator('password')
+    @field_validator('password')
     def password_strength(cls, v):
         if len(v) < 8:
             raise ValueError('La contraseña debe tener al menos 8 caracteres')
@@ -114,14 +112,14 @@ class UserCreate(UserBase):
         if not re.search(r'[^A-Za-z0-9]', v):
             raise ValueError('La contraseña debe tener al menos un carácter especial')
         return v
-    
-    @validator('confirm_password')
-    def passwords_match(cls, v, values, **kwargs):
+
+    @field_validator('confirm_password')
+    def passwords_match(cls, v, values):
         if 'password' in values and v != values['password']:
             raise ValueError('Las contraseñas no coinciden')
         return v
-    
-    @validator('icfes_score')
+
+    @field_validator('icfes_score')
     def validate_icfes_score(cls, v):
         if v is not None and (v < 0 or v > 500):
             raise ValueError('El puntaje ICFES debe estar entre 0 y 500')
@@ -139,7 +137,7 @@ class UserUpdate(BaseModel):
     is_active: Optional[bool] = None
     password: Optional[str] = None
     
-    @validator('icfes_score')
+    @field_validator('icfes_score')
     def validate_icfes_score(cls, v):
         if v is not None and (v < 0 or v > 500):
             raise ValueError('El puntaje ICFES debe estar entre 0 y 500')
@@ -161,7 +159,7 @@ class PasswordChange(BaseModel):
     current_password: str
     new_password: str
     
-    @validator('new_password')
+    @field_validator('new_password')
     def password_strength(cls, v):
         if len(v) < 8:
             raise ValueError('La contraseña debe tener al menos 8 caracteres')

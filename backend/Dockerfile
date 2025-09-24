@@ -12,8 +12,13 @@ RUN apt-get update && apt-get install -y \
 # Copiar requirements.txt primero para aprovechar la caché de Docker
 COPY requirements.txt .
 
+
 # Instalar dependencias de Python
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Instalar dependencias de test (opcional, para pruebas unitarias)
+COPY requirements-test.txt .
+RUN pip install --no-cache-dir -r requirements-test.txt
 
 # Copiar el código de la aplicación
 COPY . ./backend
